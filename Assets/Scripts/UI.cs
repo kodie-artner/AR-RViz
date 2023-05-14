@@ -18,6 +18,7 @@ public class UI : MonoBehaviour
     public Button navGoalButton;
     public ButtonPressed actionButton;
     public Button menuButton;
+    public GameObject menuPanel;
     
     private State state = State.View;
     private bool settingDirection = false;
@@ -25,9 +26,14 @@ public class UI : MonoBehaviour
     
     private List<Button> stateButtons;
     private Button currentlyHighlightedButton;
+    ROSInterface rosInterface;
+    MenuUI menuUI;
+    Localizer localizer;
 
     private void Start()
     {
+        rosInterface = ROSInterface.GetOrCreateInstance();
+        menuUI = FindObjectOfType<MenuUI>();
         stateButtons = new List<Button>() {qrCodeButton, localizeButton, navGoalButton};
         qrCodeButton.onClick.AddListener(OnQRCodeButtonClick);
         localizeButton.onClick.AddListener(OnLocalizeButtonClick);
@@ -74,17 +80,31 @@ public class UI : MonoBehaviour
             case State.View:
                 break;
             case State.QRCode:
+                GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
+                if (pressed)
+                {
+                    // Set tracker active
+                    tracker.GetComponent<MeshRenderer>().enabled = true;
+                }
+                else
+                {
+                    // Set tracker disabled
+                    tracker.GetComponent<MeshRenderer>().enabled = false;
+                    // Set Localizer to current tracker position
+                    localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text, menuUI.baseLink.text);
+                }
                 break;
             case State.Localize:
                 if (pressed)
                 {
-                    Debug.Log("start");
                     planeTarget.StartSettingDirection();
                 }
                 else
                 {
-                    Debug.Log("end");
-                    planeTarget.EndSettingDirection();
+                    Vector3 position;
+                    float heading;
+                    (position, heading) = planeTarget.EndSettingDirection();
+                    localizer.SetMapTransform(position, heading, menuUI.baseLink.text, menuUI.baseLink.text);
                 }
                 break;
             case State.NavGoal:
@@ -94,7 +114,10 @@ public class UI : MonoBehaviour
                 }
                 else
                 {
-                    planeTarget.EndSettingDirection();
+                    Vector3 position;
+                    float heading;
+                    (position, heading) = planeTarget.EndSettingDirection();
+                    rosInterface.PublishPoseStampedMsg(planeTarget.arrow.transform.position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
                 }
                 break;
         }
@@ -103,6 +126,14 @@ public class UI : MonoBehaviour
 
     public void OnMenuButtonClick()
     {
+        if (menuPanel.activeSelf)
+        {
+            menuPanel.SetActive(false);
+        }
+        else
+        {
+            menuPanel.SetActive(true);
+        }
     }
 
     private void SelectButton(Button selectedButton)

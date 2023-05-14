@@ -76,26 +76,20 @@ public class PlaneTarget : MonoBehaviour
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
         settingDirection = true;
     }
-    public float EndSettingDirection()
+    public (Vector3, float) EndSettingDirection()
     {
         Vector3 heading = arrow.transform.forward;
         Vector2 heading2d = new Vector2(heading.x, heading.z); 
         var direction = Vector2.SignedAngle(heading2d, Vector2.up);
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
         settingDirection = false;
-        return direction;
+        return (arrow.transform.position, direction);
     }
-    
+
     public void SetDirection()
     {
         arrow.transform.LookAt(anchorTarget.transform);
     }
-
-    //Might need this
-    // public void AnchorTargetEnabled(bool enabled)
-    // {
-    //     Array.ForEach(anchorTarget.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = enabled);
-    // }
 
     // Detects raycast hit a plane
     private void DetectRaycastHit()
