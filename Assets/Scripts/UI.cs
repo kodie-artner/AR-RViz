@@ -45,9 +45,8 @@ public class UI : MonoBehaviour
         actionButton.highlightColor = highlightColor;
 
         planeTarget =  (PlaneTarget)FindObjectOfType(typeof(PlaneTarget));
-        planeTarget.ShowTarget();
         // Set the QRCode button as the default highlighted button
-        SelectButton(qrCodeButton);
+        OnQRCodeButtonClick();
     }
 
     public void OnQRCodeButtonClick()
@@ -55,7 +54,6 @@ public class UI : MonoBehaviour
         state = State.QRCode;
         planeTarget.HideTarget();
         SelectButton(qrCodeButton);
-        // Add your QRCode button callback logic here
     }
 
     public void OnLocalizeButtonClick()
@@ -63,14 +61,12 @@ public class UI : MonoBehaviour
         state = State.Localize;
         planeTarget.ShowTarget();
         SelectButton(localizeButton);
-        // Add your Localize button callback logic here
     }
 
     public void OnNavGoalButtonClick()
     {
         planeTarget.ShowTarget();
         SelectButton(navGoalButton);
-        // Add your NavGoal button callback logic here
     }
 
     public void OnActionButtonClick(bool pressed)
