@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -33,7 +34,16 @@ public class UI : MonoBehaviour
     private void Start()
     {
         rosInterface = ROSInterface.GetOrCreateInstance();
+        localizer = FindObjectOfType<Localizer>();
         menuUI = FindObjectOfType<MenuUI>();
+        if (menuUI == null)
+        {
+            throw new NullReferenceException("menuUI object is null."); 
+        }
+        if (localizer == null)
+        {
+            throw new NullReferenceException("localizer object is null."); 
+        }
         stateButtons = new List<Button>() {qrCodeButton, localizeButton, navGoalButton};
         qrCodeButton.onClick.AddListener(OnQRCodeButtonClick);
         localizeButton.onClick.AddListener(OnLocalizeButtonClick);
@@ -77,6 +87,8 @@ public class UI : MonoBehaviour
                 break;
             case State.QRCode:
                 GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
+                float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
+                tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
                 if (pressed)
                 {
                     // Set tracker active

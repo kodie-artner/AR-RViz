@@ -5,13 +5,19 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using Unity.Robotics.ROSTCPConnector;
 using TMPro;
+using UnityEngine.XR.ARSubsystems;
+using UnityEngine.XR.ARFoundation;
 
 public class MenuUI : MonoBehaviour
 {
+    public ARTrackedImageManager trackedImageManager;
+    public List<XRReferenceImageLibrary> libraries;
+
     // Link in urdf that corresponds to the QR Code
     public TMP_InputField qrCodeLink;
     // Length of the QR Code edge
-    public TMP_InputField qrCodeLength;
+    public Slider qrCodeSliderLength;
+    public TMP_Text qrCodeLength;
     // Base link of robot. Should have z axis up and on the same plane as map
     public TMP_InputField baseLink;
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
@@ -37,7 +43,9 @@ public class MenuUI : MonoBehaviour
         ros = ROSConnection.GetOrCreateInstance();
         connectButton.onClick.AddListener(ConnectCallback);
         filterTopics.onValueChanged.AddListener(FilterCallback);
+        qrCodeSliderLength.onValueChanged.AddListener(SetQrCodeLength);
         ros.ListenForTopics(OnNewTopic, notifyAllExistingTopics: true);
+        SetQrCodeLength(qrCodeSliderLength.value);
     }
 
     void OnNewTopic(RosTopicState state)
@@ -94,6 +102,29 @@ public class MenuUI : MonoBehaviour
             }
         }
         UpdateScrollViewHeight(topicsShown * scrollViewItemHeight);
+    }
+
+    void SetQrCodeLength(float length)
+    {
+        //float length = qrCodeSliderLength.value;
+        qrCodeLength.text = (length * 5).ToString();
+        trackedImageManager.referenceLibrary = libraries[(int)length - 1];
+        trackedImageManager.enabled = true;
+    }
+    void ValidateQRCodeLength(string input)
+    {
+        float validFloat;
+        if (!float.TryParse(input, out validFloat) )
+        {
+            if (input != ".")
+            {
+                qrCodeLength.text = "";
+            }
+        }
+        else
+        {
+            // Set size
+        }
     }
 
     public void ConnectionStartedCB(NetworkStream stream)

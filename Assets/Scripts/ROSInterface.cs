@@ -29,10 +29,11 @@ public class ROSInterface : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Application.targetFrameRate = 60;
         ros = ROSConnection.GetOrCreateInstance();
-        ros.Subscribe<ClockMsg>("clock", ReceiveClock);
+        ros.Subscribe<ClockMsg>("/clock", ReceiveClock);
     }
-    
+
     public ClockMsg GetLastestClock()
     {
         return latestClock;
@@ -40,6 +41,7 @@ public class ROSInterface : MonoBehaviour
 
     void ReceiveClock(ClockMsg msg)
     {
+        Debug.Log("got clock");
         latestClock = msg;
     }
 

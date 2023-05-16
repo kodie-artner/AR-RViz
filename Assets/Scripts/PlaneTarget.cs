@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Robotics.Visualizations;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
@@ -25,6 +26,8 @@ public class PlaneTarget : MonoBehaviour
     private ARRaycastHit lastHit;
     private Pose hitPose;
     private Vector2 raycastPosition;
+    private Drawing3dManager drawingManager;
+    private Drawing3d arrowDrawing;
 
     // State variables
     private bool settingDirection = false;
@@ -34,14 +37,18 @@ public class PlaneTarget : MonoBehaviour
     {
         anchorTarget = Instantiate(Resources.Load("Prefabs/AnchorTarget") as GameObject,  
             Vector3.zero, Quaternion.identity);
-        arrow = Instantiate(Resources.Load("Prefabs/Arrow") as GameObject,  
-            Vector3.zero, Quaternion.identity);
+        arrow = new GameObject();
 
         raycastManager = GetComponent<ARRaycastManager>();
         planeManager = GetComponent<ARPlaneManager>();
         camera = Camera.main;
 
         raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 3);
+        drawingManager = gameObject.AddComponent<Drawing3dManager>();
+        arrowDrawing = Drawing3dManager.CreateDrawing(-1, Resources.Load("ArrowMaterial") as Material);
+        arrowDrawing.transform.SetParent(arrow.transform);
+        arrowDrawing.DrawArrow(arrow.transform.position, arrow.transform.position + Vector3.forward * 0.3f, Color.white, 0.02f, 1.5f, 0.5f);
+        Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
     }
 
     // Update is called once per frame

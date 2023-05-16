@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Robotics.ROSTCPConnector;
@@ -15,6 +16,10 @@ public class Localizer : MonoBehaviour
         // Subscribe to /clock
         ros = ROSConnection.GetOrCreateInstance();
         rosInterface = ROSInterface.GetOrCreateInstance();
+        if (rosInterface == null)
+        {
+            throw new NullReferenceException("rosinterface object is null."); 
+        }
     }
 
     public void SetMapTransformWithTracker(GameObject tracker, string link, string baseLink)
@@ -25,19 +30,20 @@ public class Localizer : MonoBehaviour
         Vector2 heading2d = new Vector2(heading.x, heading.z); 
         var trackerHeading = Vector2.SignedAngle(heading2d, Vector2.up);
         var trackerPosition = tracker.transform.position;
+        Debug.Log(trackerPosition);
+        Debug.Log(trackerHeading);
         SetMapTransform(trackerPosition, trackerHeading, link, baseLink);
     }
     
     // TODO: Clean up function
     public void SetMapTransform(Vector3 position, float heading, string link, string baseLink){
-        var time = rosInterface.GetLastestClock().clock;
         // Assumption: base_link isn't rotate around x,z
         // The base link to use for rotations
-        TFFrame T_map_base = TFSystem.instance.GetTransform(frame_id: baseLink, time: time);
+        TFFrame T_map_base = TFSystem.instance.GetTransform(frame_id: baseLink, time: 0);
         Debug.Log("base_link position" + T_map_base.translation);
 
         // The link associated with the given position
-        TFFrame T_map_link = TFSystem.instance.GetTransform(frame_id: link, time: time);
+        TFFrame T_map_link = TFSystem.instance.GetTransform(frame_id: link, time: 0);
 
         Debug.Log("tf: " + T_map_link.translation);
         
