@@ -20,11 +20,11 @@ public class UI : MonoBehaviour
     public ButtonPressed actionButton;
     public Button menuButton;
     public GameObject menuPanel;
-    
+
     private State state = State.View;
     private bool settingDirection = false;
     private PlaneTarget planeTarget;
-    
+
     private List<Button> stateButtons;
     private Button currentlyHighlightedButton;
     ROSInterface rosInterface;
@@ -38,13 +38,13 @@ public class UI : MonoBehaviour
         menuUI = FindObjectOfType<MenuUI>();
         if (menuUI == null)
         {
-            throw new NullReferenceException("menuUI object is null."); 
+            throw new NullReferenceException("menuUI object is null.");
         }
         if (localizer == null)
         {
-            throw new NullReferenceException("localizer object is null."); 
+            throw new NullReferenceException("localizer object is null.");
         }
-        stateButtons = new List<Button>() {qrCodeButton, localizeButton, navGoalButton};
+        stateButtons = new List<Button>() { qrCodeButton, localizeButton, navGoalButton };
         qrCodeButton.onClick.AddListener(OnQRCodeButtonClick);
         localizeButton.onClick.AddListener(OnLocalizeButtonClick);
         navGoalButton.onClick.AddListener(OnNavGoalButtonClick);
@@ -54,7 +54,7 @@ public class UI : MonoBehaviour
         actionButton.normalColor = normalColor;
         actionButton.highlightColor = highlightColor;
 
-        planeTarget =  (PlaneTarget)FindObjectOfType(typeof(PlaneTarget));
+        planeTarget = (PlaneTarget)FindObjectOfType(typeof(PlaneTarget));
         // Set the QRCode button as the default highlighted button
         OnQRCodeButtonClick();
     }
@@ -76,7 +76,7 @@ public class UI : MonoBehaviour
     public void OnNavGoalButtonClick()
     {
         state = State.NavGoal;
-        planeTarget.ShowTarget(true);
+        planeTarget.ShowTarget();
         SelectButton(navGoalButton);
     }
 
@@ -88,6 +88,11 @@ public class UI : MonoBehaviour
                 break;
             case State.QRCode:
                 GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
+                if (tracker == null)
+                {
+                    return;
+                }
+
                 float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
                 tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
                 if (pressed)
@@ -100,7 +105,7 @@ public class UI : MonoBehaviour
                     // Set tracker disabled
                     tracker.GetComponent<MeshRenderer>().enabled = false;
                     // Set Localizer to current tracker position
-                    localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text, menuUI.baseLink.text);
+                    localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
                 }
                 break;
             case State.Localize:
@@ -113,7 +118,7 @@ public class UI : MonoBehaviour
                     Vector3 position;
                     float heading;
                     (position, heading) = planeTarget.EndSettingDirection();
-                    localizer.SetMapTransform(position, heading, menuUI.baseLink.text, menuUI.baseLink.text);
+                    localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
                 }
                 break;
             case State.NavGoal:
@@ -130,7 +135,6 @@ public class UI : MonoBehaviour
                 }
                 break;
         }
-
     }
 
     public void OnMenuButtonClick()
@@ -182,7 +186,7 @@ public class UI : MonoBehaviour
     private void SetButtonNormalColor(Button button, Color color)
     {
         ColorBlock selectedColors = button.colors;
-            
+
         selectedColors.normalColor = color;
         selectedColors.highlightedColor = color;
 

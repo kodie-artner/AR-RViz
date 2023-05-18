@@ -112,12 +112,14 @@ public class PlaneTarget : MonoBehaviour
 
     public void StartSettingDirection()
     {
+        target2d.transform.Find("outer").GetComponent<MeshRenderer>().enabled = false;
         arrow.transform.position = target2d.transform.position;
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
         settingDirection = true;
     }
     public (Vector3, float) EndSettingDirection()
     {
+        target2d.transform.Find("outer").GetComponent<MeshRenderer>().enabled = true;
         Vector3 heading = arrow.transform.forward;
         Vector2 heading2d = new Vector2(heading.x, heading.z); 
         var direction = Vector2.SignedAngle(heading2d, Vector2.up);
@@ -128,8 +130,17 @@ public class PlaneTarget : MonoBehaviour
 
     public void SetDirection()
     {
-        Debug.Log("setting 2d direction");
-        arrow.transform.LookAt(target2d.transform);
+        // Calculate the direction from the object's position to the target's position
+        Vector3 direction = target2d.transform.position - arrow.transform.position;
+
+        // Project the direction onto the XZ plane
+        direction.y = 0f;
+
+        // Rotate the object towards the projected direction using LookAt
+        if (direction != Vector3.zero)
+        {
+            arrow.transform.LookAt(arrow.transform.position + direction);
+        }
     }
 
     public void Set3dDirection()

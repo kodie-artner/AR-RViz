@@ -9,7 +9,6 @@ public class ROSInterface : MonoBehaviour
 {
     static ROSInterface _instance;
     ROSConnection ros;
-    ClockMsg latestClock;
 
     public static ROSInterface GetOrCreateInstance()
     {
@@ -31,18 +30,6 @@ public class ROSInterface : MonoBehaviour
     {
         //Application.targetFrameRate = 60;
         ros = ROSConnection.GetOrCreateInstance();
-        ros.Subscribe<ClockMsg>("/clock", ReceiveClock);
-    }
-
-    public ClockMsg GetLastestClock()
-    {
-        return latestClock;
-    }
-
-    void ReceiveClock(ClockMsg msg)
-    {
-        Debug.Log("got clock");
-        latestClock = msg;
     }
 
     public void PublishPoseStampedMsg(Vector3 position, float angle, string frame, string topic)
@@ -55,7 +42,8 @@ public class ROSInterface : MonoBehaviour
     {
         PoseStampedMsg msg = new RosMessageTypes.Geometry.PoseStampedMsg();
         msg.header.frame_id = frame;
-        msg.header.stamp = latestClock.clock;
+        // TODO: Get time from Tf header, update ros to set this as a field for easy access
+        //msg.header.stamp = ;
         msg.pose.position.x = position.x;
         msg.pose.position.y = position.y;
         msg.pose.position.z = position.z;

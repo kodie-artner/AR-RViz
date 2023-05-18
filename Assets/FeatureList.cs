@@ -7,7 +7,7 @@ public class FeatureList : MonoBehaviour
     // Feature list
     
     // Write ReadMe
-    // Organize Code
+    // Organize Code, format code with auto format
     // Allow topics to pick size of points/color
     // Improve visualizations
     //
@@ -20,4 +20,5 @@ public class FeatureList : MonoBehaviour
     // Show tf
     // Add custom qr code
     // Save state
+    //Add Tests
 }
