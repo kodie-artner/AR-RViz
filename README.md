@@ -63,7 +63,10 @@ To connect to the robot, input the ip address and port and then click connect. I
 #### Setttings
 
 QR Code Link: This is the link in the tf tree that should correlate to the where the QR code is placed on the robot 
-or in the world. 
+or in the world. At the moment only this QR code will work:
+
+![image](Assets/ImageTracking/robot_qr_code.png)
+
 Add picture showing how qr code should line up with a tf frame.
 
 QR Code Size: The size of the physical QR code. You can select sizes from 5cm to 25cm in increments of 1cm.

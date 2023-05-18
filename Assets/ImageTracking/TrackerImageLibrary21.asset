@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
-  m_Name: TrackerImageLibrary5
+  m_Name: TrackerImageLibrary21
   m_EditorClassIdentifier: 
-  m_GuidLow: 4877854639079965384
-  m_GuidHigh: 15633715492906139783
+  m_GuidLow: 5448566053435377231
+  m_GuidHigh: 464616811362886814
   m_DataStore:
     m_Storage: []
   m_Images:
@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SerializedTextureGuid:
       m_GuidLow: 313219719414267562
       m_GuidHigh: 18155493015319815659
-    m_Size: {x: 0.05, y: 0.050217394}
+    m_Size: {x: 0.21, y: 0.21091303}
     m_SpecifySize: 1
     m_Name: RobotQrCode
     m_Texture: {fileID: 2800000, guid: e055beaac7ac0458eb25399cb444f5fb, type: 3}

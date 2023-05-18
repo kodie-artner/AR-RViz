@@ -106,8 +106,7 @@ public class MenuUI : MonoBehaviour
 
     void SetQrCodeLength(float length)
     {
-        //float length = qrCodeSliderLength.value;
-        qrCodeLength.text = (length * 5).ToString();
+        qrCodeLength.text = length.ToString();
         trackedImageManager.referenceLibrary = libraries[(int)length - 1];
         trackedImageManager.enabled = true;
     }
