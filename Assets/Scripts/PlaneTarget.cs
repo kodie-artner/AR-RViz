@@ -15,8 +15,9 @@ public class PlaneTarget : MonoBehaviour
 
     // Member variables
     public float floorOffset = 0.01f;
-    public GameObject anchorTarget;
+    public GameObject target2d;
     public GameObject arrow;
+    public GameObject target3d;
     private Camera camera;
 
     // Raycasts
@@ -31,14 +32,21 @@ public class PlaneTarget : MonoBehaviour
 
     // State variables
     private bool settingDirection = false;
+    private bool setting3dDirection = false;
+
+    void Awake()
+    {
+        target2d = Instantiate(Resources.Load("Prefabs/target2d") as GameObject,  
+            Vector3.zero, Quaternion.identity);
+        target3d = Instantiate(Resources.Load("Prefabs/target3d") as GameObject,  
+            Vector3.zero, Quaternion.identity);
+            HideTarget(true);
+        arrow = new GameObject();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        anchorTarget = Instantiate(Resources.Load("Prefabs/AnchorTarget") as GameObject,  
-            Vector3.zero, Quaternion.identity);
-        arrow = new GameObject();
-
         raycastManager = GetComponent<ARRaycastManager>();
         planeManager = GetComponent<ARPlaneManager>();
         camera = Camera.main;
@@ -49,16 +57,22 @@ public class PlaneTarget : MonoBehaviour
         arrowDrawing.transform.SetParent(arrow.transform);
         arrowDrawing.DrawArrow(arrow.transform.position, arrow.transform.position + Vector3.forward * 0.3f, Color.white, 0.02f, 1.5f, 0.5f);
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
+
+        target3d.transform.SetParent(camera.transform);
+        target3d.transform.localPosition = Vector3.forward;
     }
 
     // Update is called once per frame
     void Update()
     {
         DetectRaycastHit();
-
         if (settingDirection)
         {
             SetDirection();
+        }
+        else if (setting3dDirection)
+        {
+            Set3dDirection();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -67,19 +81,38 @@ public class PlaneTarget : MonoBehaviour
         }
     }
 
-    public void ShowTarget()
+    public void ShowTarget(bool is3d=false)
     {
-        Array.ForEach(anchorTarget.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
+        var target = is3d ? target3d : target2d;
+        Array.ForEach(target.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
     }
     
-    public void HideTarget()
+    public void HideTarget(bool is3d=false)
     {
-        Array.ForEach(anchorTarget.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
+        var target = is3d ? target3d : target2d;
+        Array.ForEach(target2d.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
+    }
+
+
+    public void StartSetting3dDirection()
+    {
+        Debug.Log("start 3d direction");
+        arrow.transform.position = target3d.transform.position;
+        Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
+        setting3dDirection = true;
+    }
+
+    public (Vector3, Quaternion) EndSetting3dDirection()
+    {
+        Debug.Log("end 3d direction");
+        Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
+        setting3dDirection = false;
+        return (target3d.transform.position, target3d.transform.rotation);
     }
 
     public void StartSettingDirection()
     {
-        arrow.transform.position = anchorTarget.transform.position;
+        arrow.transform.position = target2d.transform.position;
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = true);
         settingDirection = true;
     }
@@ -95,7 +128,14 @@ public class PlaneTarget : MonoBehaviour
 
     public void SetDirection()
     {
-        arrow.transform.LookAt(anchorTarget.transform);
+        Debug.Log("setting 2d direction");
+        arrow.transform.LookAt(target2d.transform);
+    }
+
+    public void Set3dDirection()
+    {
+        Debug.Log("setting 3d direction");
+        arrow.transform.LookAt(target3d.transform);
     }
 
     // Detects raycast hit a plane
@@ -114,8 +154,8 @@ public class PlaneTarget : MonoBehaviour
                     // TODO: Update to handle vertical planes
                     hitPose.position = hitPose.position + Vector3.up * floorOffset;
 
-                    anchorTarget.transform.position = hitPose.position;
-                    anchorTarget.transform.rotation = hitPose.rotation;
+                    target2d.transform.position = hitPose.position;
+                    target2d.transform.rotation = hitPose.rotation;
                     
                     lastHit = hit;
                     break;

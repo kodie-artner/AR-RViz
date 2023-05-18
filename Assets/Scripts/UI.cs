@@ -75,7 +75,8 @@ public class UI : MonoBehaviour
 
     public void OnNavGoalButtonClick()
     {
-        planeTarget.ShowTarget();
+        state = State.NavGoal;
+        planeTarget.ShowTarget(true);
         SelectButton(navGoalButton);
     }
 

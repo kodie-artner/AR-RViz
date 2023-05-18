@@ -176,7 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6915682758403639072}
   m_Layer: 0
-  m_Name: AnchorTarget
+  m_Name: target2d
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,7 +8,6 @@ public class FeatureList : MonoBehaviour
     
     // Write ReadMe
     // Organize Code
-    // Add image length. Can't figure out how to edit. Add a bunch of reference libraries at different sizes
     // Allow topics to pick size of points/color
     // Improve visualizations
     //
