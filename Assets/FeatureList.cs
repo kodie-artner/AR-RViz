@@ -10,6 +10,8 @@ public class FeatureList : MonoBehaviour
     // Organize Code, format code with auto format
     // Allow topics to pick size of points/color
     // Improve visualizations
+    // Refresh topics
+    // Remove auto connect to my ip
     //
     // Fix qr code scan so it doesn't need a base frame for rotations
     // Hide topics if you lose connection

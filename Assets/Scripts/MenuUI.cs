@@ -22,6 +22,7 @@ public class MenuUI : MonoBehaviour
     public TMP_InputField baseLink;
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
     public TMP_InputField poseTopic;
+    public Toggle isROS2Toggle;
     // IP address of the ros_tcp_endpoint node
     public TMP_InputField ipAddress;
     // Port number of the ros_tcp_endpoint node
@@ -41,6 +42,7 @@ public class MenuUI : MonoBehaviour
     {
         scrollViewItemHeight = topicSelectPrefab.GetComponent<RectTransform>().sizeDelta.y;
         ros = ROSConnection.GetOrCreateInstance();
+        isROS2Toggle.onValueChanged.AddListener(OnROS2Toggle);
         connectButton.onClick.AddListener(ConnectCallback);
         filterTopics.onValueChanged.AddListener(FilterCallback);
         qrCodeSliderLength.onValueChanged.AddListener(SetQrCodeLength);
@@ -50,6 +52,7 @@ public class MenuUI : MonoBehaviour
 
     void OnNewTopic(RosTopicState state)
     {
+        // TODO: Not getting called when new topics are available
         TopicVisualizer topicVisualizer;
         if (!topics.TryGetValue(state.Topic, out topicVisualizer))
         {
@@ -75,9 +78,13 @@ public class MenuUI : MonoBehaviour
         connectButton.GetComponentInChildren<TMP_Text>().text =  "Trying To Connect...";
     }
 
+    void OnROS2Toggle(bool enabled)
+    {
+        ros.ROS2 = enabled;
+    }
+
     void FilterCallback(string filter)
     {
-        Debug.Log("Filter Callback");
         topicsShown = 0;
         foreach (KeyValuePair<string, TopicVisualizer> item in topics)
         {
@@ -86,19 +93,16 @@ public class MenuUI : MonoBehaviour
             {
                 item.Value.gameObject.SetActive(true);
                 topicsShown++;
-                Debug.Log("Showing");
             }
             // If 
             else if (!item.Key.ToLower().Contains(filter) && !item.Value.topicState.RosMessageName.ToLower().Contains(filter))
             {
                 item.Value.gameObject.SetActive(false);
-                Debug.Log("hiding");
             }
             else
             {
                 item.Value.gameObject.SetActive(true);
                 topicsShown++;
-                Debug.Log("Showing");
             }
         }
         UpdateScrollViewHeight(topicsShown * scrollViewItemHeight);

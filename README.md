@@ -44,7 +44,15 @@ More info can be found on building Unity projects [here](https://docs.unity3d.co
 To setup ros to work with robot_ar_viewer, you will need to install the [ROS-TCP-Endpoint Package](https://github.com/Unity-Technologies/ROS-TCP-Endpoint).
 For ROS1 use the main branch, for ROS2 use main-ros2.
 
-Once the package is built, launch the ros_tcp_endpoint endpoint.launch file.
+Once the package is built, launch:
+```
+ROS1
+roslaunch ros_tcp_endpoint endpoint.launch
+
+ROS2
+ros2 launch ros_tcp_endpoint endpoint.py
+```
+
 The default port is 10000.
 
 Get the ip address of the computer running the ros_tcp_endpoint and the port selected above. you'll need both to connect your robot from the phone.
@@ -52,7 +60,7 @@ Get the ip address of the computer running the ros_tcp_endpoint and the port sel
 #### Downsampling Topics
 
 The ROS-TCP-Connector can only handle a limited amount of bandwidth so it is likely you will need to downsample
-the point cloud topics. To easily downsample point clouds check out the [pcl_ros Voxel Filtering](http://wiki.ros.org/pcl_ros/Tutorials/VoxelGrid%20filtering)
+the point cloud topics. To easily downsample point clouds check out the ROS1 [pcl_ros Voxel Filtering](http://wiki.ros.org/pcl_ros/Tutorials/VoxelGrid%20filtering)
 
 If the point clouds start to lag, it is likely you will need to downsample the topic.
 
