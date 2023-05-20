@@ -9,6 +9,8 @@ This project started out as a hackathon project for Cobalt Robotics. Check out w
 
 ## Compatibility
 
+### Mobile Device
+
 Tier 1:
 - iphone/iPad Pro Series
 - Androids with depth sensors
@@ -21,9 +23,29 @@ Tier 2: Won't localize as well, need to scan the room more before starting.
 Tier 3:
 - Hololens (Untested, ROS-TCP-Connector may not work)
 
+### Robot
+
+Any ROS1 or ROS2 robot that can run [ROS-TCP-Endpoint Package](https://github.com/Unity-Technologies/ROS-TCP-Endpoint)
+is compatible with the app.
+
 ## Setting Up
 
 ### Quick Start Guide
+
+1. Launch ros_tcp_endpoint.
+2. Open app and connect to ip of robot.
+3. Select the base link of the robot.
+4. manually localize robot.
+5. Select topics to view.
+
+
+### Assumptions
+
+For the app to work correctly, your robot needs to be localized to a map frame with the tf available.
+If you don't have localization, you can still use the app but the phone will need to be localized anytime 
+the robot is moved via the barcode scanner or manual localization.
+
+Robot and mobile device need to be on the same network.
 
 ### Getting the app
 
@@ -108,6 +130,11 @@ the action button. While holding, move the phone to set the direction of the bas
 
 Pose Selector: Select the Pose button, move the target to the goal location and then press and hold the
 action button to select the direction.
+
+Manipulate: The manipulate option allows you to control with InteractiveMarkers. When in this mode, you will
+see a crosshair in the center of the screen. Point it towards an interactive marker until it expands slightly.
+Now press the action button and the interactive marker will follow the motion of of the phone. 
+Note: If you obscure the cameras, the localization may drift. Be sure to have safeties on the robot in case of drift.
 
 ## Debugging 
 
