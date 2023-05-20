@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Map
   - tracker
+  - InteractiveMarker
   layers:
   - Default
   - TransparentFX

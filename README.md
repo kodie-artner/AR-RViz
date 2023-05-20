@@ -1,6 +1,9 @@
-# Robot AR Viewer
+# ARRViz - Augmented Reality Robot Visualization
 
 This Unity project allows you to view ros topics overlayed  on a real robot in augmented reality.
+
+This project started out as a hackathon project for Cobalt Robotics. Check out what they are doing at
+[https://www.cobaltrobotics.com](https://www.cobaltrobotics.com)
 
 [pic](picture)
 
@@ -19,6 +22,8 @@ Tier 3:
 - Hololens (Untested, ROS-TCP-Connector may not work)
 
 ## Setting Up
+
+### Quick Start Guide
 
 ### Getting the app
 
@@ -114,3 +119,11 @@ Get the ip address of your device and check if you can ping it from the robot.
 
 Feel free to open a pr if you have a bug fix or enhancement. See the issue tracker for a list of known bugs
 and possible enhancements.
+
+## Similar Projects 
+
+IViz: https://github.com/KIT-ISAS/iviz
+Very cool project porting over much of RViz's functionality to mobile
+
+ARViz: https://github.com/hri-group/arviz
+ROS and mixed reality for Hololens

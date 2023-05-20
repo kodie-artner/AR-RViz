@@ -51,7 +51,7 @@ public class PlaneTarget : MonoBehaviour
         planeManager = GetComponent<ARPlaneManager>();
         camera = Camera.main;
 
-        raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 3);
+        raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 2);
         drawingManager = gameObject.AddComponent<Drawing3dManager>();
         arrowDrawing = Drawing3dManager.CreateDrawing(-1, Resources.Load("ArrowMaterial") as Material);
         arrowDrawing.transform.SetParent(arrow.transform);

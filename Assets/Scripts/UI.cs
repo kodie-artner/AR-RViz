@@ -10,13 +10,16 @@ public class UI : MonoBehaviour
         View,
         QRCode,
         Localize,
-        NavGoal,
+        Pose,
+        Manipulate,
     }
     public Color highlightColor;
     public Color normalColor = Color.white;
     public Button qrCodeButton;
     public Button localizeButton;
-    public Button navGoalButton;
+    public Button poseButton;
+    public Button manipulateButton;
+    public GameObject crossHair;
     public ButtonPressed actionButton;
     public Button menuButton;
     public GameObject menuPanel;
@@ -30,12 +33,14 @@ public class UI : MonoBehaviour
     ROSInterface rosInterface;
     MenuUI menuUI;
     Localizer localizer;
+    InteractiveMarkerManipulator markerManipulator;
 
-    private void Start()
+    void Start()
     {
         rosInterface = ROSInterface.GetOrCreateInstance();
         localizer = FindObjectOfType<Localizer>();
         menuUI = FindObjectOfType<MenuUI>();
+        markerManipulator = FindObjectOfType<InteractiveMarkerManipulator>();
         if (menuUI == null)
         {
             throw new NullReferenceException("menuUI object is null.");
@@ -44,10 +49,15 @@ public class UI : MonoBehaviour
         {
             throw new NullReferenceException("localizer object is null.");
         }
-        stateButtons = new List<Button>() { qrCodeButton, localizeButton, navGoalButton };
+        if (markerManipulator == null)
+        {
+            throw new NullReferenceException("Marker Manipulator object is null.");
+        }
+        stateButtons = new List<Button>() { qrCodeButton, localizeButton, poseButton, manipulateButton};
         qrCodeButton.onClick.AddListener(OnQRCodeButtonClick);
         localizeButton.onClick.AddListener(OnLocalizeButtonClick);
-        navGoalButton.onClick.AddListener(OnNavGoalButtonClick);
+        poseButton.onClick.AddListener(OnPoseButtonClick);
+        manipulateButton.onClick.AddListener(OnManipulateButtonClick);
         menuButton.onClick.AddListener(OnMenuButtonClick);
 
         actionButton.ButtonPressedEvent += OnActionButtonClick;
@@ -59,10 +69,34 @@ public class UI : MonoBehaviour
         OnQRCodeButtonClick();
     }
 
+    void Update()
+    {
+        switch (state)
+        {
+            case State.Manipulate:
+                if (markerManipulator.MarkerSelected())
+                {
+                    markerManipulator.MoveMarker(Camera.main.transform);
+                }
+                if (markerManipulator.MarkerHovered())
+                {
+                    actionButton.gameObject.SetActive(true);
+                }
+                else if (!markerManipulator.MarkerSelected())
+                {
+                    actionButton.gameObject.SetActive(false);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     public void OnQRCodeButtonClick()
     {
         state = State.QRCode;
         planeTarget.HideTarget();
+        crossHair.SetActive(false);
         SelectButton(qrCodeButton);
     }
 
@@ -70,14 +104,25 @@ public class UI : MonoBehaviour
     {
         state = State.Localize;
         planeTarget.ShowTarget();
+        crossHair.SetActive(false);
         SelectButton(localizeButton);
     }
 
-    public void OnNavGoalButtonClick()
+    public void OnPoseButtonClick()
     {
-        state = State.NavGoal;
+        state = State.Pose;
         planeTarget.ShowTarget();
-        SelectButton(navGoalButton);
+        crossHair.SetActive(false);
+        SelectButton(poseButton);
+    }
+
+    public void OnManipulateButtonClick()
+    {
+        state = State.Manipulate;
+        planeTarget.HideTarget();
+        crossHair.SetActive(true);
+        SelectButton(manipulateButton);
+        markerManipulator.SetRaycastActive(state == State.Manipulate);
     }
 
     public void OnActionButtonClick(bool pressed)
@@ -121,7 +166,7 @@ public class UI : MonoBehaviour
                     localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
                 }
                 break;
-            case State.NavGoal:
+            case State.Pose:
                 if (pressed)
                 {
                     planeTarget.StartSettingDirection();
@@ -132,6 +177,22 @@ public class UI : MonoBehaviour
                     float heading;
                     (position, heading) = planeTarget.EndSettingDirection();
                     rosInterface.PublishPoseStampedMsg(planeTarget.arrow.transform.position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
+                }
+                break;
+            case State.Manipulate:
+                if (pressed)
+                {
+                    Debug.Log("pressed");
+                    if (!markerManipulator.MarkerSelected())
+                    {
+                        Debug.Log("start");
+                        markerManipulator.StartMovingMarker(Camera.main.transform);
+                    }
+                }
+                else
+                {
+                    Debug.Log("stopped");
+                    markerManipulator.StopMovingMarker();
                 }
                 break;
         }
@@ -168,6 +229,7 @@ public class UI : MonoBehaviour
                     // Disable action button
                     actionButton.gameObject.SetActive(false);
                     planeTarget.HideTarget();
+                    crossHair.SetActive(false);
                     state = State.View;
                 }
                 else
