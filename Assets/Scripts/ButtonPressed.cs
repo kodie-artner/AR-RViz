@@ -1,31 +1,70 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
- 
+
 public class ButtonPressed : Button, IPointerDownHandler, IPointerUpHandler
 {
-    public event System.Action<bool> ButtonPressedEvent;
-    public bool pressed;
+    public enum State
+    {
+        OnUpStay,
+        OnDown,
+        OnDownStay,
+        OnUp,
+    }
+
+    public State state { get => GetState(); }
+
     public Color normalColor;
-    public Color highlightColor;
+    public Color highlightedColor;
 
-    public void OnPointerDown(PointerEventData eventData){
-        pressed = true;
-        SetButtonNormalColor(highlightColor);
-        ButtonPressedEvent?.Invoke(true);
+    private State currentState;
+    private State previousState;
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        previousState = currentState;
+        currentState = State.OnDown;
+        SetButtonNormalColor(highlightedColor);
     }
-    
-    public void OnPointerUp(PointerEventData eventData){
-        pressed = false;
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        previousState = currentState;
+        currentState = State.OnUp;
         SetButtonNormalColor(normalColor);
-        ButtonPressedEvent?.Invoke(false);
     }
 
-    private void SetButtonNormalColor( Color color)
+    private State GetState()
+    {
+        State state = currentState;
+
+        switch (currentState)
+        {
+            case State.OnUp:
+                if (previousState == State.OnUp)
+                {
+                    state = State.OnUpStay;
+                }
+                break;
+
+            case State.OnDown:
+                if (previousState == State.OnDown)
+                {
+                    state = State.OnDownStay;
+                }
+                break;
+        }
+
+        previousState = currentState;
+        currentState = state;
+
+        return state;
+    }
+
+    private void SetButtonNormalColor(Color color)
     {
         ColorBlock selectedColors = colors;
-            
+
         selectedColors.normalColor = color;
         selectedColors.highlightedColor = color;
 

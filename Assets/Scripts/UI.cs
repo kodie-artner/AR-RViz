@@ -13,7 +13,7 @@ public class UI : MonoBehaviour
         Pose,
         Manipulate,
     }
-    public Color highlightColor;
+    public Color highlightedColor;
     public Color normalColor = Color.white;
     public Button qrCodeButton;
     public Button localizeButton;
@@ -28,7 +28,8 @@ public class UI : MonoBehaviour
     private bool settingDirection = false;
     private PlaneTarget planeTarget;
 
-    private List<Button> stateButtons;
+    private Dictionary<State, Button> stateButtons = new Dictionary<State, Button> { 
+        {State.QRCode, qrCodeButton}, {State.Localize,localizeButton}, {State.Pose,poseButton}, {State.Manipulate, manipulateButton}};
     private Button currentlyHighlightedButton;
     ROSInterface rosInterface;
     MenuUI menuUI;
@@ -53,149 +54,193 @@ public class UI : MonoBehaviour
         {
             throw new NullReferenceException("Marker Manipulator object is null.");
         }
-        stateButtons = new List<Button>() { qrCodeButton, localizeButton, poseButton, manipulateButton};
-        qrCodeButton.onClick.AddListener(OnQRCodeButtonClick);
-        localizeButton.onClick.AddListener(OnLocalizeButtonClick);
-        poseButton.onClick.AddListener(OnPoseButtonClick);
-        manipulateButton.onClick.AddListener(OnManipulateButtonClick);
+        qrCodeButton.onClick.AddListener(() => OnChangeStateClick(State.QRCode));
+        localizeButton.onClick.AddListener(() => OnChangeStateClick(State.Localize));
+        poseButton.onClick.AddListener(() => OnChangeStateClick(State.Pose));
+        manipulateButton.onClick.AddListener(() => OnChangeStateClick(State.Manipulate));
         menuButton.onClick.AddListener(OnMenuButtonClick);
-
-        actionButton.ButtonPressedEvent += OnActionButtonClick;
+       
         actionButton.normalColor = normalColor;
-        actionButton.highlightColor = highlightColor;
+        actionButton.highlightedColor = highlightedColor;
 
         planeTarget = (PlaneTarget)FindObjectOfType(typeof(PlaneTarget));
-        // Set the QRCode button as the default highlighted button
-        OnQRCodeButtonClick();
     }
-
+    
     void Update()
-    {
-        switch (state)
-        {
-            case State.Manipulate:
-                if (markerManipulator.MarkerSelected())
-                {
-                    markerManipulator.MoveMarker(Camera.main.transform);
-                }
-                if (markerManipulator.MarkerHovered())
-                {
-                    actionButton.gameObject.SetActive(true);
-                }
-                else if (!markerManipulator.MarkerSelected())
-                {
-                    actionButton.gameObject.SetActive(false);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void OnQRCodeButtonClick()
-    {
-        state = State.QRCode;
-        planeTarget.HideTarget();
-        crossHair.SetActive(false);
-        SelectButton(qrCodeButton);
-    }
-
-    public void OnLocalizeButtonClick()
-    {
-        state = State.Localize;
-        planeTarget.ShowTarget();
-        crossHair.SetActive(false);
-        SelectButton(localizeButton);
-    }
-
-    public void OnPoseButtonClick()
-    {
-        state = State.Pose;
-        planeTarget.ShowTarget();
-        crossHair.SetActive(false);
-        SelectButton(poseButton);
-    }
-
-    public void OnManipulateButtonClick()
-    {
-        state = State.Manipulate;
-        planeTarget.HideTarget();
-        crossHair.SetActive(true);
-        SelectButton(manipulateButton);
-        markerManipulator.SetRaycastActive(state == State.Manipulate);
-    }
-
-    public void OnActionButtonClick(bool pressed)
     {
         switch (state)
         {
             case State.View:
                 break;
             case State.QRCode:
-                GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
-                if (tracker == null)
-                {
-                    return;
-                }
-
-                float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
-                tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
-                if (pressed)
-                {
-                    // Set tracker active
-                    tracker.GetComponent<MeshRenderer>().enabled = true;
-                }
-                else
-                {
-                    // Set tracker disabled
-                    tracker.GetComponent<MeshRenderer>().enabled = false;
-                    // Set Localizer to current tracker position
-                    localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
-                }
+                UpdateQRCode();
                 break;
             case State.Localize:
-                if (pressed)
-                {
-                    planeTarget.StartSettingDirection();
-                }
-                else
-                {
-                    Vector3 position;
-                    float heading;
-                    (position, heading) = planeTarget.EndSettingDirection();
-                    localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
-                }
+                UpdateLocalize();
                 break;
             case State.Pose:
-                if (pressed)
-                {
-                    planeTarget.StartSettingDirection();
-                }
-                else
-                {
-                    Vector3 position;
-                    float heading;
-                    (position, heading) = planeTarget.EndSettingDirection();
-                    rosInterface.PublishPoseStampedMsg(planeTarget.arrow.transform.position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
-                }
+                UpdatePose();
                 break;
             case State.Manipulate:
-                if (pressed)
-                {
-                    Debug.Log("pressed");
-                    if (!markerManipulator.MarkerSelected())
-                    {
-                        Debug.Log("start");
-                        markerManipulator.StartMovingMarker(Camera.main.transform);
-                    }
-                }
-                else
-                {
-                    Debug.Log("stopped");
-                    markerManipulator.StopMovingMarker();
-                }
+                UpdateManipulate();
                 break;
         }
+    }
+
+    void UpdateQRCode()
+    {
+        // Add this to On QR code state enter and add activation/deactivation of image finder
+        GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
+        if (tracker == null)
+        {
+            return;
+        }
+        float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
+        tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
+
+        if (actionButton.state == ButtonPressed.State.onDown)
+        {
+            // Set tracker active
+            tracker.GetComponent<MeshRenderer>().enabled = true;
+        }
+        else if (actionButton.state == ButtonPressed.State.onUp)
+        {
+            // Set tracker disabled
+            tracker.GetComponent<MeshRenderer>().enabled = false;
+            // Set Localizer to current tracker position
+            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
+        }
+    }
+
+    void UpdateLocalize()
+    {
+        if (actionButton.state == ButtonPressed.State.onDown)
+        {
+            planeTarget.StartSettingDirection();
+        }
+        else if (actionButton.state == ButtonPressed.State.onUp)
+        {
+            Vector3 position;
+            float heading;
+            (position, heading) = planeTarget.EndSettingDirection();
+            localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
+        }
+    }
+
+    void UpdatePose()
+    {
+         if (actionButton.state == ButtonPressed.State.onDown)
+        {
+            planeTarget.StartSettingDirection();
+        }
+        else if (actionButton.state == ButtonPressed.State.onUp)
+        {
+            Vector3 position;
+            float heading;
+            (position, heading) = planeTarget.EndSettingDirection();
+            rosInterface.PublishPoseStampedMsg(planeTarget.arrow.transform.position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
+        }
+    }
+
+    void UpdateManipulate()
+    {
+        if (markerManipulator.MarkerHovered())
+        {
+            actionButton.gameObject.SetActive(true);
+        }
+        else if (!markerManipulator.MarkerSelected())
+        {
+            actionButton.gameObject.SetActive(false);
+        }
+        if (actionButton.state == ButtonPressed.State.onDown)
+        {
+            markerManipulator.StartMovingMarker(Camera.main.transform);
+        }
+        else if (actionButton.state == ButtonPressed.State.down)
+        {
+            
+            markerManipulator.MoveMarker(Camera.main.transform);
+        }
+        else if (actionButton.state == ButtonPressed.State.onUp)
+        {
+            markerManipulator.StopMovingMarker();
+        }
+    }
+
+    void SwitchedFromState(State state)
+    {
+        switch (state)
+        {
+            case State.View:
+                break;
+            case State.QRCode:
+                // TODO turn off image matcher
+                actionButton.gameObject.SetActive(false);
+                break;
+            case State.Localize:
+                planeTarget.HideTarget();
+                actionButton.gameObject.SetActive(false);
+                break;
+            case State.Pose:
+                planeTarget.HideTarget();
+                actionButton.gameObject.SetActive(false);
+                break;
+            case State.Manipulate:
+                crossHair.SetActive(false);
+                actionButton.gameObject.SetActive(false);
+                markerManipulator.SetState(InteractiveMarkerManipulator.State.Off);
+                break;
+        }
+    }
+
+    void SwitchedToState(State state)
+    {
+        switch (state)
+        {
+            case State.View:
+                break;
+            case State.QRCode:
+                actionButton.gameObject.SetActive(true);
+                break;
+            case State.Localize:
+                planeTarget.ShowTarget();
+                actionButton.gameObject.SetActive(true);
+                break;
+            case State.Pose:
+                planeTarget.ShowTarget();
+                actionButton.gameObject.SetActive(true);
+                break;
+            case State.Manipulate:
+                crossHair.SetActive(true);
+                markerManipulator.SetState(InteractiveMarkerManipulator.State.Searching);
+                break;
+        }
+        this.state = state;
+    }
+
+    private void OnChangeStateClick(State state)
+    {
+        ChangeState(state);
+        stateButtons[state].OnDeselect(null);
+    }
+
+    private void ChangeState(State newSate)
+    {
+        SwitchedFromState(this.state);
+        // Set the current state button to the normal color
+        SetButtonsNormalColor(stateButtons[this.state], normalColor);
+
+        // If the newState equals the current state or is, set the newState to View mode
+        if (newState == this.state || newState == State.View)
+        {
+            newState = State.View;   
+        }
+        // Else set the new state button to the highlighted color
+        else
+        {
+            SetButtonsNormalColor(stateButtons[newState], highlightedColor);
+        }
+        SwitchedToState(newState);
     }
 
     public void OnMenuButtonClick()
@@ -206,46 +251,12 @@ public class UI : MonoBehaviour
         }
         else
         {
+            ChangeState(State.View);
             menuPanel.SetActive(true);
         }
     }
 
-    private void SelectButton(Button selectedButton)
-    {
-        foreach (Button button in stateButtons)
-        {
-            if (button != selectedButton)
-            {
-                // Reset the button color to its default state
-                SetButtonNormalColor(button, normalColor);
-            }
-            else
-            {
-                if (selectedButton == currentlyHighlightedButton)
-                {
-                    // Reset the button color to its default state
-                    SetButtonNormalColor(button, normalColor);
-                    currentlyHighlightedButton = null;
-                    // Disable action button
-                    actionButton.gameObject.SetActive(false);
-                    planeTarget.HideTarget();
-                    crossHair.SetActive(false);
-                    state = State.View;
-                }
-                else
-                {
-                    // Highlight the new button
-                    SetButtonNormalColor(button, highlightColor);
-                    currentlyHighlightedButton = selectedButton;
-                    // Ensure action button is enabled
-                    actionButton.gameObject.SetActive(true);
-                }
-            }
-        }
-        selectedButton.OnDeselect(null);
-    }
-
-    private void SetButtonNormalColor(Button button, Color color)
+    private void SetButtonsNormalColor(Button button, Color color)
     {
         ColorBlock selectedColors = button.colors;
 

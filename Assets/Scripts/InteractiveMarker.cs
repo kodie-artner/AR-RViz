@@ -46,9 +46,22 @@ public class InteractiveMarker : MonoBehaviour
         }
     }
 
-    public void Move(Vector3 position, Quaternion rotation)
+    public void UpdatePosition(Vector3 position)
     {
-        Debug.Log("Setting transform" + position);
+        transform.position = position;
+        lastMoveTime = Time.time;
+        PublishFeedback();
+    }
+
+    public void UpdateRotation(Quaternion rotation)
+    {
+        transform.rotation = rotation;
+        lastMoveTime = Time.time;
+        PublishFeedback();
+    }
+
+    public void UpdateTransform(Vector3 position, Quaternion rotation)
+    {
         transform.position = position;
         transform.rotation = rotation;
         lastMoveTime = Time.time;

@@ -4,19 +4,93 @@ using UnityEngine;
 
 public class InteractiveMarkerManipulator : MonoBehaviour
 {
+    public enum State 
+    {
+        Off,
+        Searching,
+        MarkerSelected,
+        ManipulatePosition,
+        ManipulateRotation,
+        ManipulateBoth,
+    }
+    State currentState = State.Off;
     Vector3 raycastLocation = new Vector3(0.5f, 0.5f, 0f);
-    bool raycastActive = true;
     InteractiveMarker hoveredMarker = null;
     InteractiveMarker selectedMarker = null;
     Vector3 markerPositionOffset = Vector3.zero;
     Quaternion markerRotationOffset = Quaternion.identity;
+    Transform controllerTransform;
+
 
     // Update is called once per frame
     void Update()
     {
-        if (raycastActive)
+        if (currentState == State.Searching)
         {
             PerformRaycast();
+        }
+        else if (currentState == State.MarkerSelected)
+        {
+            // Probably do nothing
+        }
+        else if (currentState == State.ManipulatePosition)
+        {
+            // Only move position of marker
+            UpdateMarkerPosition();
+        }
+        else if (currentState == State.ManipulateRotation)
+        {
+            // Only rotate marker
+            UpdateMarkerRotation();
+        }
+        else if (currentState == State.ManipulateBoth)
+        {
+            // Move position and rotation
+            UpdateMarkerTransform();
+        }
+    }
+
+    public void SetControllerTransform(Transform controllerTransform)
+    {
+        this.controllerTransform = controllerTransform;
+    }
+
+    public void SetState(State state)
+    {
+        if (state == State.Off)
+        {
+            currentState = state;
+            selectedMarker = null;
+            if (hoveredMarker != null)
+            {
+                hoveredMarker.Expand(false);
+                hoveredMarker = null;
+            }
+        }
+         if (state == State.Searching)
+        {
+            currentState = state;
+            selectedMarker = null;
+        }
+        if (state == State.MarkerSelected)
+        {
+            if (hoveredMarker != null)
+            {
+                selectedMarker = hoveredMarker;
+            }
+            else
+            {
+                currentState = State.Searching;
+            }
+        }
+        else if (state == State.ManipulatePosition || state == State.ManipulateRotation || state == State.ManipulateBoth)
+        {
+            if (currentState != State.Off && currentState != State.Searching)
+            {
+                currentState = state;
+                markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
+                markerRotationOffset = Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
+            }
         }
     }
 
@@ -27,35 +101,23 @@ public class InteractiveMarkerManipulator : MonoBehaviour
 
     public bool MarkerSelected()
     {
-        return selectedMarker != null;
+        return currentState != State.Off && currentState != State.Searching;
     }
 
-    public void SetRaycastActive(bool active)
+    public void UpdateMarkerPosition()
     {
-        raycastActive = active;
+        selectedMarker.UpdatePosition(controllerTransform.position + markerPositionOffset);
     }
 
-    public void StartMovingMarker(Transform controllerTransform)
+    public void UpdateMarkerRotation()
     {
-        if (hoveredMarker != null)
-        {
-            selectedMarker = hoveredMarker;
-            markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
-            markerRotationOffset = Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
-        }
+        selectedMarker.UpdateRotation(controllerTransform.rotation * markerRotationOffset);
     }
 
-    public void MoveMarker(Transform controllerTransform)
+    public void UpdateMarkerTransform()
     {
-        if (selectedMarker != null)
-        {
-            selectedMarker.Move(controllerTransform.position + markerPositionOffset, controllerTransform.rotation * markerRotationOffset);
-        }
-    }
-
-    public void StopMovingMarker()
-    {
-        selectedMarker = null;
+        selectedMarker.UpdateTransform(controllerTransform.position + markerPositionOffset, 
+            controllerTransform.rotation * markerRotationOffset);
     }
 
     public void PerformRaycast()
@@ -64,27 +126,25 @@ public class InteractiveMarkerManipulator : MonoBehaviour
         RaycastHit hit;
 
         // Perform the Raycast
-        if (Physics.Raycast(ray, out hit))
+        Physics.Raycast(ray, out hit);
+        InteractiveMarker marker = HitObjectHasInteractiveMarkerTag(hit);
+
+        if (marker != null)
         {
-            // Check if the hit GameObject or any of its parents have the "InteractiveMarker" tag
-            InteractiveMarker marker = HitObjectHasInteractiveMarkerTag(hit.collider.gameObject);
-            if (hoveredMarker != null && marker != null && hoveredMarker != marker && selectedMarker == null)
+            if (hoveredMarker != null && hoveredMarker != marker)
             {
-                
                 hoveredMarker.Expand(false);
                 hoveredMarker = null;
             }
-            if (marker != null && hoveredMarker == null && selectedMarker == null)
+            if (hoveredMarker == null)
             {
-                // The hit GameObject or one of its parents is an InteractiveMarker
-                Debug.Log("InteractiveMarker hit!");
                 marker.Expand(true);
                 hoveredMarker = marker;
             }
         }
         else
         {
-            if (hoveredMarker != null && selectedMarker != null)
+            if (hoveredMarker != null)
             {
                 hoveredMarker.Expand(false);
                 hoveredMarker = null;
@@ -92,9 +152,14 @@ public class InteractiveMarkerManipulator : MonoBehaviour
         }
     }
 
-    private InteractiveMarker HitObjectHasInteractiveMarkerTag(GameObject hitObject)
+    private InteractiveMarker HitObjectHasInteractiveMarkerTag(RaycastHit hit)
     {
-        Transform parent = hitObject.transform;
+        if (hit == null)
+        {
+            return null;
+        }
+
+        Transform parent = hit.collider.gameObject.transform;
 
         while (parent != null)
         {
