@@ -13,6 +13,7 @@ public class FeatureList : MonoBehaviour
     // Remove auto connect to my ip
     // Connect button stuck on connecting it pushed before server is up
     // Add Occlusion Option
+    // Pose publisher doesn't publish on first go
     //
     // Fix qr code scan so it doesn't need a base frame for rotations
     // Hide topics if you lose connection

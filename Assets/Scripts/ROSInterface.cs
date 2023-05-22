@@ -54,6 +54,7 @@ public class ROSInterface : MonoBehaviour
 
     void PublishPoseStampedMsg(RosMessageTypes.Geometry.PoseStampedMsg msg, string topic)
     {
-        ros.RegisterPublisher(topic, "PoseStampedMsg");
+        ros.RegisterPublisher<PoseStampedMsg>(topic);
+        ros.Publish(topic, msg);
     }
 }
