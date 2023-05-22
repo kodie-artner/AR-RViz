@@ -102,7 +102,7 @@ or in the world. At the moment only this QR code will work:
 
 ![image](Assets/ImageTracking/robot_qr_code.png)
 
-Add picture showing how qr code should line up with a tf frame.
+[Add picture showing how qr code should line up with a tf frame.]()
 
 QR Code Size: The size of the physical QR code. You can select sizes from 5cm to 25cm in increments of 1cm.
 
@@ -112,7 +112,9 @@ It is expected that the base link is not offset from the ground with the z frame
 Pose Topic: The topic to use with the pose tool. The pose tool will send a PoseStamped msg over this topic. 
 It can be used to send a navigation goal, initial pose, or anything other PoseStamped msg.
 
-Topics: The topics section allows you to choose which topics are shown in the visualization. 
+Topics: The topics section allows you to choose which topics are shown in the visualization. If a topic is greyed out
+it means there isn't a visualizer for that topic type. Check the creatign visualizations sections to add custom
+visualizations.
 
 #### Usage
 
@@ -135,6 +137,12 @@ Manipulate: The manipulate option allows you to control with InteractiveMarkers.
 see a crosshair in the center of the screen. Point it towards an interactive marker until it expands slightly.
 Now press the action button and the interactive marker will follow the motion of of the phone. 
 Note: If you obscure the cameras, the localization may drift. Be sure to have safeties on the robot in case of drift.
+
+## Visualizations
+
+The visualizations of topics can be edited in the source code so that topics show are visualized in different ways.
+To edit a visualization, check out the SensorVisualizers folder for examples. Once you create a new visualizer, 
+you'll need to add it to the DefaultVisualizationSuite in the main scene.
 
 ## Debugging 
 

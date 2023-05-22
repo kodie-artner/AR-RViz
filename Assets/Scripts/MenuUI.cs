@@ -113,7 +113,8 @@ public class MenuUI : MonoBehaviour
     void SetQrCodeLength(float length)
     {
         qrCodeLength.text = length.ToString();
-        trackedImageManager.referenceLibrary = libraries[(int)length - 1];
+        // Offset by 5 because we start at 5cm
+        trackedImageManager.referenceLibrary = libraries[(int)length - 5];  
     }
 
     public void ConnectionStartedCB(NetworkStream stream)

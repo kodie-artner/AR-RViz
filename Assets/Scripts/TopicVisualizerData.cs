@@ -58,10 +58,10 @@ public class TopicVisualizerData
         }
 
         visual = null;
-        visualFactory = visualFactory;
+        this.visualFactory = visualFactory;
         cachedRosMessageName = RosMessageName;
 
-        if (visualFactory == null)
+        if (this.visualFactory == null)
         {
             noVisualFactoryAvailable = true;
         }

@@ -72,6 +72,9 @@ public class UI : MonoBehaviour
        
         actionButton.normalColor = normalColor;
         actionButton.highlightedColor = highlightedColor;
+
+        // Start in QR Code Mode
+        ChangeState(State.QRCode);
     }
     
     void Update()
@@ -252,7 +255,6 @@ public class UI : MonoBehaviour
         {
             SetButtonsNormalColor(button, normalColor);
         }
-        //SetButtonsNormalColor(stateButtons[this.state], normalColor);
 
         // If the newState equals the current state or is, set the newState to View mode
         if (newState == this.state || newState == State.View)
