@@ -7,90 +7,80 @@ using Unity.Robotics.ROSTCPConnector.MessageGeneration;
 using Unity.Robotics.Visualizations;
 using UnityEngine;
 
-// Represents a single line in the VisualizationTopicsTab
-// and saves and loads the options for that line, plus the associated hud windows etc.
+// This file is a derivative of VisualizationTopicTabEntry.cs in ros_tcp_connector
 public class TopicVisualizerData
 {
-    RosTopicState m_TopicState;
-    public RosTopicState TopicState => m_TopicState;
-    public string Topic => m_TopicState.Topic;
-    public MessageSubtopic Subtopic => m_TopicState.Subtopic;
-    public string RosMessageName => m_TopicState.RosMessageName;
+    private RosTopicState topicState;
+    public RosTopicState TopicState => topicState;
+    public string Topic => topicState.Topic;
+    public MessageSubtopic Subtopic => topicState.Subtopic;
+    public string RosMessageName => topicState.RosMessageName;
     public string Title => Topic + (Subtopic == MessageSubtopic.Response ? " (response)" : "");
 
-    // a service topic is represented by two lines, one for the request and one for the response. m_ServiceResponseTopic is the response.
-    TopicVisualizerData m_ServiceResponseTopic;
+    public bool CanShowWindow => GetVisualFactory() != null;
+    public bool CanShowDrawing => GetVisualFactory() != null && visualFactory.CanShowDrawing;
 
-    bool m_IsVisualizingDrawing;
-    public bool IsVisualizingDrawing => m_IsVisualizingDrawing;
+    private bool isVisualizingDrawing;
+    public bool IsVisualizingDrawing => isVisualizingDrawing;
+    private string cachedRosMessageName;
+    private IVisualFactory visualFactory;
+    private bool noVisualFactoryAvailable;
+    private IVisual visual;
+    public IVisual Visual => visual;
 
-    string m_CachedRosMessageName;
-
-    IVisualFactory m_VisualFactory;
-    bool m_NoVisualFactoryAvailable;
-
-    IVisual m_Visual;
-    public IVisual Visual => m_Visual;
+    public TopicVisualizerData(RosTopicState baseState)
+    {
+        topicState = baseState;
+        cachedRosMessageName = RosMessageName;
+    }
 
     public IVisualFactory GetVisualFactory()
     {
-        if (m_CachedRosMessageName != RosMessageName)
+        if (cachedRosMessageName != RosMessageName)
         {
             // if the topic has changed, discard our cached data
-            m_VisualFactory = null;
-            m_NoVisualFactoryAvailable = false;
+            visualFactory = null;
+            noVisualFactoryAvailable = false;
         }
 
-        if (m_VisualFactory == null && !m_NoVisualFactoryAvailable)
+        if (visualFactory == null && !noVisualFactoryAvailable)
         {
             SetVisualFactory(VisualFactoryRegistry.GetVisualFactory(Topic, RosMessageName, Subtopic));
         }
-        return m_VisualFactory;
+        return visualFactory;
     }
 
     public void SetVisualFactory(IVisualFactory visualFactory)
     {
-        if (m_Visual != null)
-            m_Visual.SetDrawingEnabled(false);
-        m_Visual = null;
+        if (visual != null)
+        {
+            visual.SetDrawingEnabled(false);
+        }
 
-        m_VisualFactory = visualFactory;
-        m_CachedRosMessageName = RosMessageName;
-        if (m_VisualFactory == null)
-            m_NoVisualFactoryAvailable = true;
+        visual = null;
+        visualFactory = visualFactory;
+        cachedRosMessageName = RosMessageName;
 
-        EnableVisualization(m_IsVisualizingDrawing);
+        if (visualFactory == null)
+        {
+            noVisualFactoryAvailable = true;
+        }
+
+        EnableVisualization(isVisualizingDrawing);
     }
-
-    public bool CanShowWindow => GetVisualFactory() != null;
-    public bool CanShowDrawing => GetVisualFactory() != null && m_VisualFactory.CanShowDrawing;
-
-
 
     public void EnableVisualization(bool enable)
     {
-        m_IsVisualizingDrawing = enable;
+        isVisualizingDrawing = enable;
 
-        if (enable && m_Visual == null)
+        if (enable && visual == null)
         {
-            m_Visual = GetVisualFactory().GetOrCreateVisual(Topic);
+            visual = GetVisualFactory().GetOrCreateVisual(Topic);
         }
 
-        if (m_Visual != null)
+        if (visual != null)
         {
-            m_Visual.SetDrawingEnabled(enable);
+            visual.SetDrawingEnabled(enable);
         }
-    }
-
-    public TopicVisualizerData(RosTopicState baseState)
-    {
-        m_TopicState = baseState;
-
-        // if (baseState.ServiceResponseTopic != null || true)
-        // {
-        //     m_ServiceResponseTopic = new TopicVisualizerData(baseState.ServiceResponseTopic);
-        // }
-
-        m_CachedRosMessageName = RosMessageName;
     }
 }

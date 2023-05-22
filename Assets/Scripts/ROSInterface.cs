@@ -7,8 +7,8 @@ using RosMessageTypes.Geometry;
 
 public class ROSInterface : MonoBehaviour
 {
-    static ROSInterface _instance;
-    ROSConnection ros;
+    private static ROSInterface _instance;
+    private ROSConnection ros;
 
     public static ROSInterface GetOrCreateInstance()
     {
@@ -25,10 +25,8 @@ public class ROSInterface : MonoBehaviour
         return _instance;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        //Application.targetFrameRate = 60;
         ros = ROSConnection.GetOrCreateInstance();
     }
 
@@ -53,6 +51,7 @@ public class ROSInterface : MonoBehaviour
         msg.pose.orientation.w = rotation.w;
         PublishPoseStampedMsg(msg, topic);
     }
+
     void PublishPoseStampedMsg(RosMessageTypes.Geometry.PoseStampedMsg msg, string topic)
     {
         ros.RegisterPublisher(topic, "PoseStampedMsg");

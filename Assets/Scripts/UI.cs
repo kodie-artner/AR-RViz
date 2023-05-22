@@ -13,6 +13,8 @@ public class UI : MonoBehaviour
         Pose,
         Manipulate,
     }
+
+    // Color is 5DCB83
     public Color highlightedColor;
     public Color normalColor = Color.white;
     public Button qrCodeButton;
@@ -25,23 +27,26 @@ public class UI : MonoBehaviour
     public GameObject menuPanel;
 
     private State state = State.View;
-    private bool settingDirection = false;
-    private PlaneTarget planeTarget;
-
-    private Dictionary<State, Button> stateButtons = new Dictionary<State, Button> { 
-        {State.QRCode, qrCodeButton}, {State.Localize,localizeButton}, {State.Pose,poseButton}, {State.Manipulate, manipulateButton}};
+    
+    private Dictionary<State, Button> stateButtons;
     private Button currentlyHighlightedButton;
-    ROSInterface rosInterface;
-    MenuUI menuUI;
-    Localizer localizer;
-    InteractiveMarkerManipulator markerManipulator;
+    private ROSInterface rosInterface;
+    private MenuUI menuUI;
+    private Localizer localizer;
+    private PoseSetter2D poseSetter2D;
+    private InteractiveMarkerManipulator markerManipulator;
 
     void Start()
     {
+        stateButtons = new Dictionary<State, Button> { 
+            {State.QRCode, qrCodeButton}, {State.Localize,localizeButton}, {State.Pose,poseButton}, {State.Manipulate, manipulateButton}};
+
         rosInterface = ROSInterface.GetOrCreateInstance();
-        localizer = FindObjectOfType<Localizer>();
+        localizer = new Localizer();
         menuUI = FindObjectOfType<MenuUI>();
-        markerManipulator = FindObjectOfType<InteractiveMarkerManipulator>();
+        poseSetter2D = FindObjectOfType<PoseSetter2D>();
+        markerManipulator = new InteractiveMarkerManipulator(Camera.main.transform);
+
         if (menuUI == null)
         {
             throw new NullReferenceException("menuUI object is null.");
@@ -52,8 +57,13 @@ public class UI : MonoBehaviour
         }
         if (markerManipulator == null)
         {
-            throw new NullReferenceException("Marker Manipulator object is null.");
+            throw new NullReferenceException("markerManipulator object is null.");
         }
+        if (poseSetter2D == null)
+        {
+            throw new NullReferenceException("poseSetter2D object is null.");
+        }
+        
         qrCodeButton.onClick.AddListener(() => OnChangeStateClick(State.QRCode));
         localizeButton.onClick.AddListener(() => OnChangeStateClick(State.Localize));
         poseButton.onClick.AddListener(() => OnChangeStateClick(State.Pose));
@@ -62,8 +72,6 @@ public class UI : MonoBehaviour
        
         actionButton.normalColor = normalColor;
         actionButton.highlightedColor = highlightedColor;
-
-        planeTarget = (PlaneTarget)FindObjectOfType(typeof(PlaneTarget));
     }
     
     void Update()
@@ -85,104 +93,30 @@ public class UI : MonoBehaviour
                 UpdateManipulate();
                 break;
         }
-    }
 
-    void UpdateQRCode()
-    {
-        // Add this to On QR code state enter and add activation/deactivation of image finder
-        GameObject tracker = GameObject.FindGameObjectWithTag("tracker");
-        if (tracker == null)
+        // Code for shutting down app
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            return;
-        }
-        float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
-        tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
-
-        if (actionButton.state == ButtonPressed.State.onDown)
-        {
-            // Set tracker active
-            tracker.GetComponent<MeshRenderer>().enabled = true;
-        }
-        else if (actionButton.state == ButtonPressed.State.onUp)
-        {
-            // Set tracker disabled
-            tracker.GetComponent<MeshRenderer>().enabled = false;
-            // Set Localizer to current tracker position
-            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
+            Application.Quit();
         }
     }
 
-    void UpdateLocalize()
-    {
-        if (actionButton.state == ButtonPressed.State.onDown)
-        {
-            planeTarget.StartSettingDirection();
-        }
-        else if (actionButton.state == ButtonPressed.State.onUp)
-        {
-            Vector3 position;
-            float heading;
-            (position, heading) = planeTarget.EndSettingDirection();
-            localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
-        }
-    }
-
-    void UpdatePose()
-    {
-         if (actionButton.state == ButtonPressed.State.onDown)
-        {
-            planeTarget.StartSettingDirection();
-        }
-        else if (actionButton.state == ButtonPressed.State.onUp)
-        {
-            Vector3 position;
-            float heading;
-            (position, heading) = planeTarget.EndSettingDirection();
-            rosInterface.PublishPoseStampedMsg(planeTarget.arrow.transform.position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
-        }
-    }
-
-    void UpdateManipulate()
-    {
-        if (markerManipulator.MarkerHovered())
-        {
-            actionButton.gameObject.SetActive(true);
-        }
-        else if (!markerManipulator.MarkerSelected())
-        {
-            actionButton.gameObject.SetActive(false);
-        }
-        if (actionButton.state == ButtonPressed.State.onDown)
-        {
-            markerManipulator.StartMovingMarker(Camera.main.transform);
-        }
-        else if (actionButton.state == ButtonPressed.State.down)
-        {
-            
-            markerManipulator.MoveMarker(Camera.main.transform);
-        }
-        else if (actionButton.state == ButtonPressed.State.onUp)
-        {
-            markerManipulator.StopMovingMarker();
-        }
-    }
-
-    void SwitchedFromState(State state)
+    private void SwitchedFromState(State state)
     {
         switch (state)
         {
             case State.View:
                 break;
             case State.QRCode:
-                // TODO turn off image matcher
+                menuUI.trackedImageManager.enabled = false;
                 actionButton.gameObject.SetActive(false);
                 break;
             case State.Localize:
-                planeTarget.HideTarget();
+                poseSetter2D.SetState(PoseSetter2D.State.Off);
                 actionButton.gameObject.SetActive(false);
                 break;
             case State.Pose:
-                planeTarget.HideTarget();
+                poseSetter2D.SetState(PoseSetter2D.State.Off);
                 actionButton.gameObject.SetActive(false);
                 break;
             case State.Manipulate:
@@ -193,21 +127,22 @@ public class UI : MonoBehaviour
         }
     }
 
-    void SwitchedToState(State state)
+    private void SwitchedToState(State state)
     {
         switch (state)
         {
             case State.View:
                 break;
             case State.QRCode:
+                menuUI.trackedImageManager.enabled = true;
                 actionButton.gameObject.SetActive(true);
                 break;
             case State.Localize:
-                planeTarget.ShowTarget();
+                poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
                 actionButton.gameObject.SetActive(true);
                 break;
             case State.Pose:
-                planeTarget.ShowTarget();
+                poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
                 actionButton.gameObject.SetActive(true);
                 break;
             case State.Manipulate:
@@ -218,17 +153,106 @@ public class UI : MonoBehaviour
         this.state = state;
     }
 
+    private void UpdateQRCode()
+    {
+        ButtonPressed.State actionButtonState = actionButton.GetState();
+        // Add this to On QR code state enter and add activation/deactivation of image finder
+        GameObject tracker = GameObject.FindGameObjectWithTag("Tracker");
+        if (tracker == null)
+        {
+            return;
+        }
+        float trackerSize = float.Parse(menuUI.qrCodeLength.text) / 100;
+        tracker.transform.localScale = new Vector3(trackerSize, 0.01f, trackerSize);
+
+        if (actionButtonState == ButtonPressed.State.OnDown)
+        {
+            // Set tracker active
+            tracker.GetComponent<MeshRenderer>().enabled = true;
+        }
+        else if (actionButtonState == ButtonPressed.State.OnUp)
+        {
+            // Set tracker disabled
+            tracker.GetComponent<MeshRenderer>().enabled = false;
+            // Set Localizer to current tracker position
+            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
+        }
+    }
+
+    private void UpdateLocalize()
+    {
+        ButtonPressed.State actionButtonState = actionButton.GetState();
+        if (actionButtonState == ButtonPressed.State.OnDown)
+        {
+            poseSetter2D.SetState(PoseSetter2D.State.SelectingRotation);
+        }
+        else if (actionButtonState == ButtonPressed.State.OnUp)
+        {
+            (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
+            poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
+            if (menuUI.baseLink.text == "")
+            {
+                localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
+            }
+        }
+    }
+
+    private void UpdatePose()
+    {
+        ButtonPressed.State actionButtonState = actionButton.GetState();
+        if (actionButtonState == ButtonPressed.State.OnDown)
+        {
+            poseSetter2D.SetState(PoseSetter2D.State.SelectingRotation);
+        }
+        else if (actionButtonState == ButtonPressed.State.OnUp)
+        {
+            (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
+            poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
+            if (menuUI.baseLink.text != "")
+            {
+                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
+            }
+        }
+    }
+
+    private void UpdateManipulate()
+    {
+        ButtonPressed.State actionButtonState = actionButton.GetState();
+        markerManipulator.Update();
+        if (markerManipulator.MarkerHovered())
+        {
+            actionButton.gameObject.SetActive(true);
+        }
+        else if (!markerManipulator.MarkerSelected())
+        {
+            actionButton.gameObject.SetActive(false);
+        }
+        if (actionButtonState == ButtonPressed.State.OnDown)
+        {
+            markerManipulator.SetState(InteractiveMarkerManipulator.State.MarkerSelected);
+            markerManipulator.SetState(InteractiveMarkerManipulator.State.ManipulateBoth);
+        }
+        else if (actionButtonState == ButtonPressed.State.OnUp)
+        {
+            markerManipulator.SetState(InteractiveMarkerManipulator.State.Searching);
+        }
+    }
+
     private void OnChangeStateClick(State state)
     {
         ChangeState(state);
         stateButtons[state].OnDeselect(null);
     }
 
-    private void ChangeState(State newSate)
+    private void ChangeState(State newState)
     {
         SwitchedFromState(this.state);
         // Set the current state button to the normal color
-        SetButtonsNormalColor(stateButtons[this.state], normalColor);
+        foreach (Button button in stateButtons.Values)
+        {
+            SetButtonsNormalColor(button, normalColor);
+        }
+        //SetButtonsNormalColor(stateButtons[this.state], normalColor);
 
         // If the newState equals the current state or is, set the newState to View mode
         if (newState == this.state || newState == State.View)

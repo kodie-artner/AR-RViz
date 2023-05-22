@@ -106,7 +106,6 @@ public class InteractiveMarker : MonoBehaviour
 
     public void UpdateLatestMsg(InteractiveMarkerMsg msg)
     {
-        Debug.Log(msg);
         if (Time.time - lastMoveTime > timeDelay)
         {
             transform.localPosition = msg.pose.position.From<FLU>();

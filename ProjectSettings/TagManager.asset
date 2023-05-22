@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Map
-  - tracker
   - InteractiveMarker
+  - Tracker
   layers:
   - Default
   - TransparentFX

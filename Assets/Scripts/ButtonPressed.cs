@@ -12,8 +12,6 @@ public class ButtonPressed : Button, IPointerDownHandler, IPointerUpHandler
         OnUp,
     }
 
-    public State state { get => GetState(); }
-
     public Color normalColor;
     public Color highlightedColor;
 
@@ -34,7 +32,7 @@ public class ButtonPressed : Button, IPointerDownHandler, IPointerUpHandler
         SetButtonNormalColor(normalColor);
     }
 
-    private State GetState()
+    public State GetState()
     {
         State state = currentState;
 

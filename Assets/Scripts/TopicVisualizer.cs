@@ -11,7 +11,7 @@ public class TopicVisualizer : MonoBehaviour
     public RosTopicState topicState;
     public TMP_Text topic;
     public Toggle toggle;
-    TopicVisualizerData topicVisualizerData;
+    private TopicVisualizerData topicVisualizerData;
 
     public void Initialize(RosTopicState state)
     {

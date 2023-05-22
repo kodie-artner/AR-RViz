@@ -10,9 +10,9 @@ using UnityEngine.XR.ARFoundation;
 
 public class MenuUI : MonoBehaviour
 {
+    // The public fields need to be set in the inspector
     public ARTrackedImageManager trackedImageManager;
     public List<XRReferenceImageLibrary> libraries;
-
     // Link in urdf that corresponds to the QR Code
     public TMP_InputField qrCodeLink;
     // Length of the QR Code edge
@@ -32,11 +32,12 @@ public class MenuUI : MonoBehaviour
     public TMP_InputField filterTopics;
     public GameObject scrollViewContent;
     public GameObject topicSelectPrefab;
+
     private ROSConnection ros;
-    Dictionary<string, TopicVisualizer> topics = new Dictionary<string, TopicVisualizer>();
-    int topicsShown = 0;
-    float scrollViewItemHeight;
-    int scrollViewPadding = 20;
+    private Dictionary<string, TopicVisualizer> topics = new Dictionary<string, TopicVisualizer>();
+    private int topicsShown = 0;
+    private float scrollViewItemHeight;
+    private int scrollViewPadding = 20;
 
     void Start()
     {
@@ -95,7 +96,8 @@ public class MenuUI : MonoBehaviour
                 topicsShown++;
             }
             // If 
-            else if (!item.Key.ToLower().Contains(filter) && !item.Value.topicState.RosMessageName.ToLower().Contains(filter))
+            else if (!item.Key.ToLower().Contains(filter.ToLower()) && 
+                !item.Value.topicState.RosMessageName.ToLower().Contains(filter.ToLower()))
             {
                 item.Value.gameObject.SetActive(false);
             }
@@ -112,22 +114,6 @@ public class MenuUI : MonoBehaviour
     {
         qrCodeLength.text = length.ToString();
         trackedImageManager.referenceLibrary = libraries[(int)length - 1];
-        trackedImageManager.enabled = true;
-    }
-    void ValidateQRCodeLength(string input)
-    {
-        float validFloat;
-        if (!float.TryParse(input, out validFloat) )
-        {
-            if (input != ".")
-            {
-                qrCodeLength.text = "";
-            }
-        }
-        else
-        {
-            // Set size
-        }
     }
 
     public void ConnectionStartedCB(NetworkStream stream)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractiveMarkerManipulator : MonoBehaviour
+public class InteractiveMarkerManipulator
 {
     public enum State 
     {
@@ -21,9 +21,13 @@ public class InteractiveMarkerManipulator : MonoBehaviour
     Quaternion markerRotationOffset = Quaternion.identity;
     Transform controllerTransform;
 
+    public InteractiveMarkerManipulator(Transform controllerTransform)
+    {
+        this.controllerTransform = controllerTransform;
+    }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         if (currentState == State.Searching)
         {
@@ -57,40 +61,44 @@ public class InteractiveMarkerManipulator : MonoBehaviour
 
     public void SetState(State state)
     {
-        if (state == State.Off)
+        switch (state)
         {
-            currentState = state;
-            selectedMarker = null;
-            if (hoveredMarker != null)
-            {
-                hoveredMarker.Expand(false);
-                hoveredMarker = null;
-            }
-        }
-         if (state == State.Searching)
-        {
-            currentState = state;
-            selectedMarker = null;
-        }
-        if (state == State.MarkerSelected)
-        {
-            if (hoveredMarker != null)
-            {
-                selectedMarker = hoveredMarker;
-            }
-            else
-            {
-                currentState = State.Searching;
-            }
-        }
-        else if (state == State.ManipulatePosition || state == State.ManipulateRotation || state == State.ManipulateBoth)
-        {
-            if (currentState != State.Off && currentState != State.Searching)
-            {
+            case State.Off:
                 currentState = state;
-                markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
-                markerRotationOffset = Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
-            }
+                selectedMarker = null;
+                if (hoveredMarker != null)
+                {
+                    hoveredMarker.Expand(false);
+                    hoveredMarker = null;
+                }
+                break;
+            case State.Searching:
+                currentState = state;
+                selectedMarker = null;
+                break;
+            case State.MarkerSelected:
+                if (hoveredMarker != null)
+                {
+                    selectedMarker = hoveredMarker;
+                    currentState = state;
+                }
+                else
+                {
+                    currentState = State.Searching;
+                }
+                break;
+            case State.ManipulatePosition:
+                // continue to ManipulateBoth
+            case State.ManipulateRotation:
+                // continue to ManipulateBoth
+            case State.ManipulateBoth:
+                if (currentState != State.Off && currentState != State.Searching)
+                {
+                    currentState = state;
+                    markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
+                    markerRotationOffset = Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
+                }
+                break;
         }
     }
 
@@ -124,10 +132,17 @@ public class InteractiveMarkerManipulator : MonoBehaviour
     {
         Ray ray = Camera.main.ViewportPointToRay(raycastLocation);
         RaycastHit hit;
+        InteractiveMarker marker;
 
         // Perform the Raycast
-        Physics.Raycast(ray, out hit);
-        InteractiveMarker marker = HitObjectHasInteractiveMarkerTag(hit);
+        if (Physics.Raycast(ray, out hit))
+        {
+            marker = HitObjectHasInteractiveMarkerTag(hit);
+        }
+        else
+        {
+            marker = null;
+        }
 
         if (marker != null)
         {
@@ -154,11 +169,6 @@ public class InteractiveMarkerManipulator : MonoBehaviour
 
     private InteractiveMarker HitObjectHasInteractiveMarkerTag(RaycastHit hit)
     {
-        if (hit == null)
-        {
-            return null;
-        }
-
         Transform parent = hit.collider.gameObject.transform;
 
         while (parent != null)
