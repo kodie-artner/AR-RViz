@@ -38,6 +38,7 @@ public class MenuUI : MonoBehaviour
     private int topicsShown = 0;
     private float scrollViewItemHeight;
     private int scrollViewPadding = 20;
+    private string connectButtonText = null;
 
     void Start()
     {
@@ -51,9 +52,17 @@ public class MenuUI : MonoBehaviour
         SetQrCodeLength(qrCodeSliderLength.value);
     }
 
+    void Update()
+    {
+        if (connectButtonText != null)
+        {
+            connectButton.GetComponentInChildren<TMP_Text>().text = connectButtonText;
+            connectButtonText = null;
+        }
+    }
+
     void OnNewTopic(RosTopicState state)
     {
-        // TODO: Not getting called when new topics are available
         TopicVisualizer topicVisualizer;
         if (!topics.TryGetValue(state.Topic, out topicVisualizer))
         {
@@ -74,9 +83,9 @@ public class MenuUI : MonoBehaviour
         int.TryParse(port.text, out portInt);
         ros.RosPort = portInt;
         // Connect to ros
-        ros.Connect();
+        ros.Connect(ConnectionStartedCB, ConnectedEndedCB);
         // Update button text
-        connectButton.GetComponentInChildren<TMP_Text>().text =  "Trying To Connect...";
+        connectButtonText = "Trying To Connect...";
     }
 
     void OnROS2Toggle(bool enabled)
@@ -95,8 +104,8 @@ public class MenuUI : MonoBehaviour
                 item.Value.gameObject.SetActive(true);
                 topicsShown++;
             }
-            // If 
-            else if (!item.Key.ToLower().Contains(filter.ToLower()) && 
+            // If
+            else if (!item.Key.ToLower().Contains(filter.ToLower()) &&
                 !item.Value.topicState.RosMessageName.ToLower().Contains(filter.ToLower()))
             {
                 item.Value.gameObject.SetActive(false);
@@ -114,17 +123,21 @@ public class MenuUI : MonoBehaviour
     {
         qrCodeLength.text = length.ToString();
         // Offset by 5 because we start at 5cm
-        trackedImageManager.referenceLibrary = libraries[(int)length - 5];  
+        trackedImageManager.referenceLibrary = libraries[(int)length - 5];
     }
 
     public void ConnectionStartedCB(NetworkStream stream)
     {
-        connectButton.GetComponentInChildren<TMP_Text>().text = "Connected";
+        // Can't set text directly because we aren't on the main thread
+        connectButtonText = "Connected";
+        ros.OnConnectionStartedCallback(stream);
     }
 
     public void ConnectedEndedCB()
     {
-        connectButton.GetComponentInChildren<TMP_Text>().text = "Connect";
+        // Can't set text directly because we aren't on the main thread
+        connectButtonText = "Failed To Connect";
+        ros.OnConnectionLostCallback();
     }
 
     private void UpdateScrollViewHeight(float height)
