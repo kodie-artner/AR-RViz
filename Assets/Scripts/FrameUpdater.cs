@@ -19,7 +19,8 @@ public class FrameUpdater : MonoBehaviour
 
     void Update()
     {
-        if (frame_id == null) return;
+        if (frame_id == null)
+            return;
         TFFrame frame = TFSystem.instance.GetTransform(frame_id, 0);
         // TODO: Add check to make sure frame exists
         transform.localPosition = frame.translation;

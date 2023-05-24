@@ -8,16 +8,17 @@ using UnityEngine.XR.ARSubsystems;
 
 [RequireComponent(typeof(ARRaycastManager))]
 [RequireComponent(typeof(ARPlaneManager))]
-public class PoseSetter2D: MonoBehaviour
+public class PoseSetter2D : MonoBehaviour
 {
-    public enum State 
+    public enum State
     {
         Off,
         SelectingPosition,
         SelectingRotation
     }
 
-    private const TrackableType trackableTypes = TrackableType.FeaturePoint | TrackableType.PlaneWithinPolygon;
+    private const TrackableType trackableTypes =
+        TrackableType.FeaturePoint | TrackableType.PlaneWithinPolygon;
     private const float floorOffset = 0.01f;
     private GameObject target2d;
     private GameObject arrow;
@@ -32,8 +33,11 @@ public class PoseSetter2D: MonoBehaviour
 
     void Awake()
     {
-        target2d = Instantiate(Resources.Load("Prefabs/target2d") as GameObject,  
-            Vector3.zero, Quaternion.identity);
+        target2d = Instantiate(
+            Resources.Load("Prefabs/target2d") as GameObject,
+            Vector3.zero,
+            Quaternion.identity
+        );
         arrow = new GameObject();
     }
 
@@ -43,16 +47,26 @@ public class PoseSetter2D: MonoBehaviour
         planeManager = GetComponent<ARPlaneManager>();
 
         Camera camera = Camera.main;
-        raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 2);  // Center of Screen
-        arrowDrawing = Drawing3dManager.CreateDrawing(-1, Resources.Load("ArrowMaterial") as Material);
+        raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 2); // Center of Screen
+        arrowDrawing = Drawing3dManager.CreateDrawing(
+            -1,
+            Resources.Load("ArrowMaterial") as Material
+        );
         arrowDrawing.transform.SetParent(arrow.transform);
-        arrowDrawing.DrawArrow(arrow.transform.position, arrow.transform.position + Vector3.forward * 0.3f, Color.white, 0.02f, 1.5f, 0.5f);
+        arrowDrawing.DrawArrow(
+            arrow.transform.position,
+            arrow.transform.position + Vector3.forward * 0.3f,
+            Color.white,
+            0.02f,
+            1.5f,
+            0.5f
+        );
         Array.ForEach(arrow.GetComponentsInChildren<MeshRenderer>(), x => x.enabled = false);
     }
 
     void Update()
     {
-        switch(state)
+        switch (state)
         {
             case State.Off:
                 raycastManager.enabled = false;
@@ -73,7 +87,7 @@ public class PoseSetter2D: MonoBehaviour
     public void SetState(State state)
     {
         this.state = state;
-        switch(state)
+        switch (state)
         {
             case State.Off:
                 EnableTarget(false);
@@ -94,7 +108,7 @@ public class PoseSetter2D: MonoBehaviour
     public (Vector3, float) GetTargetTransform()
     {
         Vector3 heading = arrow.transform.forward;
-        Vector2 heading2d = new Vector2(heading.x, heading.z); 
+        Vector2 heading2d = new Vector2(heading.x, heading.z);
         var direction = Vector2.SignedAngle(heading2d, Vector2.up);
         return (arrow.transform.position, direction);
     }

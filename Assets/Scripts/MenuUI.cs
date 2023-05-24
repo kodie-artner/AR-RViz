@@ -13,20 +13,27 @@ public class MenuUI : MonoBehaviour
     // The public fields need to be set in the inspector
     public ARTrackedImageManager trackedImageManager;
     public List<XRReferenceImageLibrary> libraries;
+
     // Link in urdf that corresponds to the QR Code
     public TMP_InputField qrCodeLink;
+
     // Length of the QR Code edge
     public Slider qrCodeSliderLength;
     public TMP_Text qrCodeLength;
+
     // Base link of robot. Should have z axis up and on the same plane as map
     public TMP_InputField baseLink;
+
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
     public TMP_InputField poseTopic;
     public Toggle isROS2Toggle;
+
     // IP address of the ros_tcp_endpoint node
     public TMP_InputField ipAddress;
+
     // Port number of the ros_tcp_endpoint node
     public TMP_InputField port;
+
     // Connect to ros button
     public Button connectButton;
     public TMP_InputField filterTopics;
@@ -66,7 +73,8 @@ public class MenuUI : MonoBehaviour
         TopicVisualizer topicVisualizer;
         if (!topics.TryGetValue(state.Topic, out topicVisualizer))
         {
-            topicVisualizer = Instantiate(topicSelectPrefab, scrollViewContent.transform).GetComponent<TopicVisualizer>();
+            topicVisualizer = Instantiate(topicSelectPrefab, scrollViewContent.transform)
+                .GetComponent<TopicVisualizer>();
             topicVisualizer.Initialize(state);
             topics.Add(state.Topic, topicVisualizer);
             UpdateScrollViewHeight(++topicsShown * scrollViewItemHeight);
@@ -105,8 +113,10 @@ public class MenuUI : MonoBehaviour
                 topicsShown++;
             }
             // If
-            else if (!item.Key.ToLower().Contains(filter.ToLower()) &&
-                !item.Value.topicState.RosMessageName.ToLower().Contains(filter.ToLower()))
+            else if (
+                !item.Key.ToLower().Contains(filter.ToLower())
+                && !item.Value.topicState.RosMessageName.ToLower().Contains(filter.ToLower())
+            )
             {
                 item.Value.gameObject.SetActive(false);
             }

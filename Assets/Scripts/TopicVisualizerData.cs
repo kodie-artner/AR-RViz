@@ -45,7 +45,9 @@ public class TopicVisualizerData
 
         if (visualFactory == null && !noVisualFactoryAvailable)
         {
-            SetVisualFactory(VisualFactoryRegistry.GetVisualFactory(Topic, RosMessageName, Subtopic));
+            SetVisualFactory(
+                VisualFactoryRegistry.GetVisualFactory(Topic, RosMessageName, Subtopic)
+            );
         }
         return visualFactory;
     }

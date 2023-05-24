@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InteractiveMarkerManipulator
 {
-    public enum State 
+    public enum State
     {
         Off,
         Searching,
@@ -13,6 +13,7 @@ public class InteractiveMarkerManipulator
         ManipulateRotation,
         ManipulateBoth,
     }
+
     State currentState = State.Off;
     Vector3 raycastLocation = new Vector3(0.5f, 0.5f, 0f);
     InteractiveMarker hoveredMarker = null;
@@ -88,15 +89,18 @@ public class InteractiveMarkerManipulator
                 }
                 break;
             case State.ManipulatePosition:
-                // continue to ManipulateBoth
+            // continue to ManipulateBoth
             case State.ManipulateRotation:
-                // continue to ManipulateBoth
+            // continue to ManipulateBoth
             case State.ManipulateBoth:
                 if (currentState != State.Off && currentState != State.Searching)
                 {
                     currentState = state;
-                    markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
-                    markerRotationOffset = Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
+                    markerPositionOffset =
+                        selectedMarker.transform.position - controllerTransform.position;
+                    markerRotationOffset =
+                        Quaternion.Inverse(controllerTransform.rotation)
+                        * selectedMarker.transform.rotation;
                 }
                 break;
         }
@@ -124,8 +128,10 @@ public class InteractiveMarkerManipulator
 
     public void UpdateMarkerTransform()
     {
-        selectedMarker.UpdateTransform(controllerTransform.position + markerPositionOffset, 
-            controllerTransform.rotation * markerRotationOffset);
+        selectedMarker.UpdateTransform(
+            controllerTransform.position + markerPositionOffset,
+            controllerTransform.rotation * markerRotationOffset
+        );
     }
 
     public void PerformRaycast()
@@ -175,7 +181,8 @@ public class InteractiveMarkerManipulator
         {
             if (parent.CompareTag("InteractiveMarker"))
             {
-                return parent.GetComponent<InteractiveMarker>();;
+                return parent.GetComponent<InteractiveMarker>();
+                ;
             }
             parent = parent.parent;
         }

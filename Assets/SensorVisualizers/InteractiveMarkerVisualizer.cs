@@ -12,9 +12,10 @@ using Unity.Robotics.ROSTCPConnector;
 namespace RosMessageTypes.Visualization
 {
     public class InteractiveMarkerVisualizer : BaseVisualFactory<InteractiveMarkerUpdateMsg>
-    {   
+    {
         // TODO get from resources
         public InteractiveMarker interactiveMarkerPrefab;
+
         // The BaseVisualFactory's job is just to create visuals for topics as appropriate.
         protected override IVisual CreateVisual(string topic)
         {
@@ -33,7 +34,6 @@ namespace RosMessageTypes.Visualization
             string topicNS;
             string feedbackTopic;
 
-
             public InteractiveMarkerVisual(string topic, InteractiveMarker interactiveMarkerPrefab)
             {
                 this.interactiveMarkerPrefab = interactiveMarkerPrefab;
@@ -48,9 +48,15 @@ namespace RosMessageTypes.Visualization
                     throw new Exception("Invalid topic name for interactive marker");
                 }
 
-                ROSConnection.GetOrCreateInstance().Subscribe<InteractiveMarkerInitMsg>(topic + "_full", AddInitMessage);
-                ROSConnection.GetOrCreateInstance().Subscribe<InteractiveMarkerUpdateMsg>(topic, AddMessage);
-                ROSConnection.GetOrCreateInstance().RegisterPublisher<InteractiveMarkerFeedbackMsg>(feedbackTopic);
+                ROSConnection
+                    .GetOrCreateInstance()
+                    .Subscribe<InteractiveMarkerInitMsg>(topic + "_full", AddInitMessage);
+                ROSConnection
+                    .GetOrCreateInstance()
+                    .Subscribe<InteractiveMarkerUpdateMsg>(topic, AddMessage);
+                ROSConnection
+                    .GetOrCreateInstance()
+                    .RegisterPublisher<InteractiveMarkerFeedbackMsg>(feedbackTopic);
             }
 
             void AddMessage(InteractiveMarkerUpdateMsg message)
@@ -115,17 +121,12 @@ namespace RosMessageTypes.Visualization
                     }
                 }
             }
-    
-            public void Redraw()
-            {
 
-            }
+            public void Redraw() { }
 
-            public void OnGUI()
-            {
+            public void OnGUI() { }
+        }
 
-            }
-            }
         // Indicates that this visualizer should have a "3d" drawing checkbox in the topics list
         public override bool CanShowDrawing => true;
     }

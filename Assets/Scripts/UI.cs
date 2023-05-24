@@ -38,8 +38,13 @@ public class UI : MonoBehaviour
 
     void Start()
     {
-        stateButtons = new Dictionary<State, Button> {
-            {State.QRCode, qrCodeButton}, {State.Localize,localizeButton}, {State.Pose,poseButton}, {State.Manipulate, manipulateButton}};
+        stateButtons = new Dictionary<State, Button>
+        {
+            { State.QRCode, qrCodeButton },
+            { State.Localize, localizeButton },
+            { State.Pose, poseButton },
+            { State.Manipulate, manipulateButton }
+        };
 
         rosInterface = ROSInterface.GetOrCreateInstance();
         localizer = new Localizer();
@@ -213,7 +218,12 @@ public class UI : MonoBehaviour
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
             if (menuUI.baseLink.text != "")
             {
-                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
+                rosInterface.PublishPoseStampedMsg(
+                    position,
+                    heading,
+                    menuUI.baseLink.text,
+                    menuUI.poseTopic.text
+                );
             }
         }
     }

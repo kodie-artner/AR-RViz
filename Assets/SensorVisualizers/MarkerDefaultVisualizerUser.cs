@@ -31,7 +31,8 @@ namespace Unity.Robotics.Visualizations
         public class MarkersVisual : IVisual
         {
             public string Label => $"Markers ({m_DrawingNamespaces.Count})";
-            Dictionary<string, Dictionary<int, Drawing3d>> m_DrawingNamespaces = new Dictionary<string, Dictionary<int, Drawing3d>>();
+            Dictionary<string, Dictionary<int, Drawing3d>> m_DrawingNamespaces =
+                new Dictionary<string, Dictionary<int, Drawing3d>>();
             HashSet<string> m_HiddenNamespaces = new HashSet<string>();
             bool m_IsDrawingEnabled;
             public bool IsDrawingEnabled => m_IsDrawingEnabled;
@@ -46,10 +47,7 @@ namespace Unity.Robotics.Visualizations
                     ros.Subscribe<MarkerMsg>(topic, OnMarker);
             }
 
-            public void Destroy()
-            {
-
-            }
+            public void Destroy() { }
 
             public void OnGUI()
             {
@@ -58,7 +56,9 @@ namespace Unity.Robotics.Visualizations
                     GUILayout.Label("Waiting for messages...");
                 }
 
-                foreach (KeyValuePair<string, Dictionary<int, Drawing3d>> element in m_DrawingNamespaces)
+                foreach (
+                    KeyValuePair<string, Dictionary<int, Drawing3d>> element in m_DrawingNamespaces
+                )
                 {
                     string key = element.Key;
                     bool hidden = m_HiddenNamespaces.Contains(key);
@@ -98,7 +98,12 @@ namespace Unity.Robotics.Visualizations
                 switch (marker.action)
                 {
                     case MarkerMsg.DELETEALL:
-                        foreach (Dictionary<int, Drawing3d> namespaceToDestroy in m_DrawingNamespaces.Values)
+                        foreach (
+                            Dictionary<
+                                int,
+                                Drawing3d
+                            > namespaceToDestroy in m_DrawingNamespaces.Values
+                        )
                             foreach (Drawing3d drawingToDestroy in namespaceToDestroy.Values)
                                 drawingToDestroy.Destroy();
                         m_DrawingNamespaces.Clear();
@@ -117,7 +122,9 @@ namespace Unity.Robotics.Visualizations
                         if (marker.lifetime.sec == 0 && marker.lifetime.nanosec == 0)
                             drawing.ClearDuration();
                         else
-                            drawing.SetDuration(marker.lifetime.sec + marker.lifetime.nanosec / 1E9f);
+                            drawing.SetDuration(
+                                marker.lifetime.sec + marker.lifetime.nanosec / 1E9f
+                            );
                         drawing.Clear();
                         Draw<FLU>(marker, drawing);
                         break;
@@ -153,39 +160,77 @@ namespace Unity.Robotics.Visualizations
                             if (marker.scale.z != 0)
                                 arrowheadGradient = (float)(marker.scale.y / marker.scale.z);
 
-                            drawing.DrawArrow(startPoint, endPoint, marker.color.ToUnityColor(),
-                                (float)marker.scale.x, (float)(marker.scale.y / marker.scale.x), arrowheadGradient);
+                            drawing.DrawArrow(
+                                startPoint,
+                                endPoint,
+                                marker.color.ToUnityColor(),
+                                (float)marker.scale.x,
+                                (float)(marker.scale.y / marker.scale.x),
+                                arrowheadGradient
+                            );
                         }
                         else
                         {
                             startPoint = marker.pose.position.From<C>();
-                            endPoint = startPoint + marker.pose.orientation.From<C>() * Vector3.forward * (float)marker.scale.x;
+                            endPoint =
+                                startPoint
+                                + marker.pose.orientation.From<C>()
+                                    * Vector3.forward
+                                    * (float)marker.scale.x;
 
-                            drawing.DrawArrow(startPoint, endPoint, marker.color.ToUnityColor(), (float)marker.scale.y);
+                            drawing.DrawArrow(
+                                startPoint,
+                                endPoint,
+                                marker.color.ToUnityColor(),
+                                (float)marker.scale.y
+                            );
                         }
                         break;
                     case MarkerMsg.CUBE:
-                        drawing.DrawCuboid(marker.pose.position.From<C>(), marker.scale.From<C>() * 0.5f, marker.pose.orientation.From<C>(), marker.color.ToUnityColor());
+                        drawing.DrawCuboid(
+                            marker.pose.position.From<C>(),
+                            marker.scale.From<C>() * 0.5f,
+                            marker.pose.orientation.From<C>(),
+                            marker.color.ToUnityColor()
+                        );
                         break;
                     case MarkerMsg.SPHERE:
-                        drawing.DrawSpheroid(marker.pose.position.From<C>(), marker.scale.From<C>() * 0.5f, marker.pose.orientation.From<C>(), marker.color.ToUnityColor());
+                        drawing.DrawSpheroid(
+                            marker.pose.position.From<C>(),
+                            marker.scale.From<C>() * 0.5f,
+                            marker.pose.orientation.From<C>(),
+                            marker.color.ToUnityColor()
+                        );
                         break;
                     case MarkerMsg.CYLINDER:
                         drawing.transform.position = marker.pose.position.From<C>();
                         drawing.transform.rotation = marker.pose.orientation.From<C>();
                         drawing.transform.localScale = marker.scale.From<C>();
-                        drawing.DrawCylinder(new Vector3(0, -0.5f, 0), new Vector3(0, 0.5f, 0), marker.color.ToUnityColor(), 0.5f);
+                        drawing.DrawCylinder(
+                            new Vector3(0, -0.5f, 0),
+                            new Vector3(0, 0.5f, 0),
+                            marker.color.ToUnityColor(),
+                            0.5f
+                        );
                         break;
                     case MarkerMsg.LINE_STRIP:
                         drawing.transform.position = marker.pose.position.From<C>();
                         drawing.transform.rotation = marker.pose.orientation.From<C>();
                         if (marker.colors.Length == marker.points.Length)
                         {
-                            drawing.DrawLineStrip(marker.points.Select(p => p.From<C>()).ToArray(), marker.colors.Select(c => (Color32)c.ToUnityColor()).ToArray(), (float)marker.scale.x);
+                            drawing.DrawLineStrip(
+                                marker.points.Select(p => p.From<C>()).ToArray(),
+                                marker.colors.Select(c => (Color32)c.ToUnityColor()).ToArray(),
+                                (float)marker.scale.x
+                            );
                         }
                         else
                         {
-                            drawing.DrawLineStrip(marker.points.Select(p => p.From<C>()).ToArray(), marker.color.ToUnityColor(), (float)marker.scale.x);
+                            drawing.DrawLineStrip(
+                                marker.points.Select(p => p.From<C>()).ToArray(),
+                                marker.color.ToUnityColor(),
+                                (float)marker.scale.x
+                            );
                         }
                         break;
                     case MarkerMsg.LINE_LIST:
@@ -193,14 +238,23 @@ namespace Unity.Robotics.Visualizations
                         drawing.transform.rotation = marker.pose.orientation.From<C>();
                         if (marker.colors.Length == marker.points.Length)
                         {
-                            drawing.DrawLines(marker.points.Select(p => p.From<C>()).ToArray(), marker.colors.Select(c => (Color32)c.ToUnityColor()).ToArray(), (float)marker.scale.x);
+                            drawing.DrawLines(
+                                marker.points.Select(p => p.From<C>()).ToArray(),
+                                marker.colors.Select(c => (Color32)c.ToUnityColor()).ToArray(),
+                                (float)marker.scale.x
+                            );
                         }
                         else
                         {
-                            drawing.DrawLines(marker.points.Select(p => p.From<C>()).ToArray(), marker.color.ToUnityColor(), (float)marker.scale.x);
+                            drawing.DrawLines(
+                                marker.points.Select(p => p.From<C>()).ToArray(),
+                                marker.color.ToUnityColor(),
+                                (float)marker.scale.x
+                            );
                         }
                         break;
                     case MarkerMsg.CUBE_LIST:
+
                         {
                             drawing.transform.position = marker.pose.position.From<C>();
                             drawing.transform.rotation = marker.pose.orientation.From<C>();
@@ -209,7 +263,11 @@ namespace Unity.Robotics.Visualizations
                             {
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    drawing.DrawCuboid(marker.points[Idx].From<C>(), cubeScale, marker.colors[Idx].ToUnityColor());
+                                    drawing.DrawCuboid(
+                                        marker.points[Idx].From<C>(),
+                                        cubeScale,
+                                        marker.colors[Idx].ToUnityColor()
+                                    );
                                 }
                             }
                             else
@@ -217,12 +275,17 @@ namespace Unity.Robotics.Visualizations
                                 Color32 color = marker.color.ToUnityColor();
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    drawing.DrawCuboid(marker.points[Idx].From<C>(), cubeScale, color);
+                                    drawing.DrawCuboid(
+                                        marker.points[Idx].From<C>(),
+                                        cubeScale,
+                                        color
+                                    );
                                 }
                             }
                         }
                         break;
                     case MarkerMsg.SPHERE_LIST:
+
                         {
                             drawing.transform.position = marker.pose.position.From<C>();
                             drawing.transform.rotation = marker.pose.orientation.From<C>();
@@ -231,7 +294,12 @@ namespace Unity.Robotics.Visualizations
                             {
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    drawing.DrawSpheroid(marker.points[Idx].From<C>(), radii, Quaternion.identity, marker.colors[Idx].ToUnityColor());
+                                    drawing.DrawSpheroid(
+                                        marker.points[Idx].From<C>(),
+                                        radii,
+                                        Quaternion.identity,
+                                        marker.colors[Idx].ToUnityColor()
+                                    );
                                 }
                             }
                             else
@@ -239,12 +307,18 @@ namespace Unity.Robotics.Visualizations
                                 Color32 color = marker.color.ToUnityColor();
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    drawing.DrawSpheroid(marker.points[Idx].From<C>(), radii, Quaternion.identity, color);
+                                    drawing.DrawSpheroid(
+                                        marker.points[Idx].From<C>(),
+                                        radii,
+                                        Quaternion.identity,
+                                        color
+                                    );
                                 }
                             }
                         }
                         break;
                     case MarkerMsg.POINTS:
+
                         {
                             PointCloudDrawing cloud = drawing.AddPointCloud(marker.points.Length);
                             cloud.transform.position = marker.pose.position.From<C>();
@@ -254,7 +328,11 @@ namespace Unity.Robotics.Visualizations
                             {
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    cloud.AddPoint(marker.points[Idx].From<C>(), marker.colors[Idx].ToUnityColor(), radius);
+                                    cloud.AddPoint(
+                                        marker.points[Idx].From<C>(),
+                                        marker.colors[Idx].ToUnityColor(),
+                                        radius
+                                    );
                                 }
                             }
                             else
@@ -269,11 +347,16 @@ namespace Unity.Robotics.Visualizations
                         }
                         break;
                     case MarkerMsg.TEXT_VIEW_FACING:
-                        drawing.DrawLabel(marker.text, marker.pose.position.From<C>(), marker.color.ToUnityColor());
+                        drawing.DrawLabel(
+                            marker.text,
+                            marker.pose.position.From<C>(),
+                            marker.color.ToUnityColor()
+                        );
                         break;
                     case MarkerMsg.MESH_RESOURCE:
                         break;
                     case MarkerMsg.TRIANGLE_LIST:
+
                         {
                             drawing.transform.position = marker.pose.position.From<C>();
                             drawing.transform.rotation = marker.pose.orientation.From<C>();
@@ -288,7 +371,8 @@ namespace Unity.Robotics.Visualizations
                                         marker.points[Idx].From<C>(),
                                         marker.colors[Idx - 2].ToUnityColor(),
                                         marker.colors[Idx - 1].ToUnityColor(),
-                                        marker.colors[Idx].ToUnityColor());
+                                        marker.colors[Idx].ToUnityColor()
+                                    );
                                 }
                             }
                             else
@@ -300,7 +384,8 @@ namespace Unity.Robotics.Visualizations
                                         marker.points[Idx - 2].From<C>(),
                                         marker.points[Idx - 1].From<C>(),
                                         marker.points[Idx].From<C>(),
-                                        color);
+                                        color
+                                    );
                                 }
                             }
                         }

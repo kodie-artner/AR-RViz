@@ -18,7 +18,7 @@ public class Localizer
         var trackerHeading = GetHeading(tracker.transform.forward);
         SetMapTransform(tracker.transform.position, trackerHeading, link);
     }
-    
+
     public void SetMapTransform(Vector3 targetPosition, float targetHeading, string link)
     {
         // The link associated with the given position
@@ -30,17 +30,18 @@ public class Localizer
 
         // Convert targetHeading into quaternion
         Quaternion rotation = Quaternion.Euler(0, targetHeading, 0);
-        
-        mapTransform.position = targetPosition - rotation * Quaternion.Inverse(linkRotation) * T_map_link.translation;
+
+        mapTransform.position =
+            targetPosition - rotation * Quaternion.Inverse(linkRotation) * T_map_link.translation;
         mapTransform.rotation = rotation * Quaternion.Inverse(linkRotation);
     }
 
     private float GetHeading(Vector3 forwardDirection)
     {
-         // Project on x,z plane
+        // Project on x,z plane
         Vector3 heading = Vector3.ProjectOnPlane(forwardDirection, Vector3.up);
-        // Get angle between heading and Vector2.up which is the vector (0, 1) which corresponds to 
-        // out zero angle 
+        // Get angle between heading and Vector2.up which is the vector (0, 1) which corresponds to
+        // out zero angle
         return Vector2.SignedAngle(new Vector2(heading.x, heading.z), Vector2.up);
     }
 }

@@ -27,7 +27,7 @@ public class TopicVisualizer : MonoBehaviour
         {
             throw new NullReferenceException("toggle object is null.");
         }
-        topicState = state;       
+        topicState = state;
         topicVisualizerData = new TopicVisualizerData(state);
         topic.text = state.Topic;
         toggle.interactable = topicVisualizerData.CanShowDrawing;
@@ -39,7 +39,7 @@ public class TopicVisualizer : MonoBehaviour
         {
             topicVisualizerData.EnableVisualization(true);
         }
-        else 
+        else
         {
             topicVisualizerData.EnableVisualization(false);
         }
