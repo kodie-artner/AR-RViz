@@ -164,19 +164,11 @@ public class PointCloud2VisualizerSettingsUSer : VisualizerSettingsGeneric<Point
                 case ColorMode.HSV:
                     if (m_HueChannel.Length > 0)
                     {
-                        int hueChannelOffset = (int)
-                            message.fields[channelToIdx[m_HueChannel]].offset;
+                        int hueChannelOffset = (int)message.fields[channelToIdx[m_HueChannel]].offset;
                         colorGenerator = (int iPointStep) =>
                         {
-                            int colC = BitConverter.ToInt16(
-                                message.data,
-                                (iPointStep + hueChannelOffset)
-                            );
-                            return Color.HSVToRGB(
-                                Mathf.InverseLerp(m_HueRange[0], m_HueRange[1], colC),
-                                1,
-                                1
-                            );
+                            int colC = BitConverter.ToInt16(message.data, (iPointStep + hueChannelOffset));
+                            return Color.HSVToRGB(Mathf.InverseLerp(m_HueRange[0], m_HueRange[1], colC), 1, 1);
                         };
                     }
                     break;
@@ -210,8 +202,7 @@ public class PointCloud2VisualizerSettingsUSer : VisualizerSettingsGeneric<Point
                 case ColorMode.CombinedRGB:
                     if (m_RgbChannel.Length > 0)
                     {
-                        int rgbChannelOffset = (int)
-                            message.fields[channelToIdx[m_RgbChannel]].offset;
+                        int rgbChannelOffset = (int)message.fields[channelToIdx[m_RgbChannel]].offset;
                         colorGenerator = (int iPointStep) =>
                             new Color32(
                                 message.data[iPointStep + rgbChannelOffset + 2],
@@ -258,10 +249,7 @@ public class PointCloud2VisualizerSettingsUSer : VisualizerSettingsGeneric<Point
             if (formatDict.ContainsKey((PointField_Format_Constants)field.datatype))
                 formatDict[(PointField_Format_Constants)field.datatype].Add(field.name);
             else
-                formatDict.Add(
-                    (PointField_Format_Constants)field.datatype,
-                    new List<string> { field.name }
-                );
+                formatDict.Add((PointField_Format_Constants)field.datatype, new List<string> { field.name });
 
         var formats = "";
         foreach (var f in formatDict)

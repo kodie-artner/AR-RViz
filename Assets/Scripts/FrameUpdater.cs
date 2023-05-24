@@ -7,6 +7,7 @@ using Unity.Robotics.Visualizations;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 
+// Frame updater simply updates the position of this gameObject via the TF location.
 public class FrameUpdater : MonoBehaviour
 {
     private string frame_id;

@@ -7,7 +7,8 @@ using Unity.Robotics.ROSTCPConnector.MessageGeneration;
 using Unity.Robotics.Visualizations;
 using UnityEngine;
 
-// This file is a derivative of VisualizationTopicTabEntry.cs in ros_tcp_connector
+// This file is a derivative of VisualizationTopicTabEntry.cs in ros_tcp_connector and handles activating
+// and deactivating of topic visualizers.
 public class TopicVisualizerData
 {
     private RosTopicState topicState;
@@ -45,9 +46,7 @@ public class TopicVisualizerData
 
         if (visualFactory == null && !noVisualFactoryAvailable)
         {
-            SetVisualFactory(
-                VisualFactoryRegistry.GetVisualFactory(Topic, RosMessageName, Subtopic)
-            );
+            SetVisualFactory(VisualFactoryRegistry.GetVisualFactory(Topic, RosMessageName, Subtopic));
         }
         return visualFactory;
     }

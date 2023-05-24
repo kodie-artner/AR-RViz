@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 
+// MenuUI is the handles all the logic in the menu.
 public class MenuUI : MonoBehaviour
 {
     // The public fields need to be set in the inspector

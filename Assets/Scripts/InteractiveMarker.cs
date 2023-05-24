@@ -7,6 +7,7 @@ using Unity.Robotics.Visualizations;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 
+// InteractiveMarker is a class for handing InteractiveMarker behaviors.
 public class InteractiveMarker : MonoBehaviour
 {
     const float timeDelay = 2;
@@ -34,6 +35,7 @@ public class InteractiveMarker : MonoBehaviour
         drawing.transform.localRotation = Quaternion.identity;
         DrawAxisVectors();
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -57,7 +59,9 @@ public class InteractiveMarker : MonoBehaviour
 
     public void DrawAxisVectors()
     {
-        Vector3 x, y, z;
+        Vector3 x,
+            y,
+            z;
         float size = 0.15f;
 
         x = new Vector3<FLU>(1, 0, 0).toUnity * size;
@@ -70,7 +74,7 @@ public class InteractiveMarker : MonoBehaviour
         drawing.DrawArrow(Vector3.zero, x, Color.red, thickness, arrowheadScale, arrowheadGradient);
         drawing.DrawArrow(Vector3.zero, y, Color.green, thickness, arrowheadScale, arrowheadGradient);
         drawing.DrawArrow(Vector3.zero, z, Color.blue, thickness, arrowheadScale, arrowheadGradient);
-        drawing.DrawCuboid(Vector3.zero, new Vector3(.03f,.03f,.03f), Color.white);
+        drawing.DrawCuboid(Vector3.zero, new Vector3(.03f, .03f, .03f), Color.white);
     }
 
     public void UpdatePosition(Vector3 position)

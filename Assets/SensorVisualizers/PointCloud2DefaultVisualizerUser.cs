@@ -9,6 +9,5 @@ using UnityEngine;
 public class PointCloud2DefaultVisualizerUser
     : DrawingVisualizerWithSettings<PointCloud2Msg, PointCloud2VisualizerSettings>
 {
-    public override string DefaultScriptableObjectPath =>
-        "VisualizerSettings/PointCloud2VisualizerSettings";
+    public override string DefaultScriptableObjectPath => "VisualizerSettings/PointCloud2VisualizerSettings";
 }

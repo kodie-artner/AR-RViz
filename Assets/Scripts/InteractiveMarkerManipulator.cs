@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// InteractiveMarkerManipulator is responsible for manipulating individual InteractiveMarkers.
 public class InteractiveMarkerManipulator
 {
     public enum State
@@ -96,11 +97,9 @@ public class InteractiveMarkerManipulator
                 if (currentState != State.Off && currentState != State.Searching)
                 {
                     currentState = state;
-                    markerPositionOffset =
-                        selectedMarker.transform.position - controllerTransform.position;
+                    markerPositionOffset = selectedMarker.transform.position - controllerTransform.position;
                     markerRotationOffset =
-                        Quaternion.Inverse(controllerTransform.rotation)
-                        * selectedMarker.transform.rotation;
+                        Quaternion.Inverse(controllerTransform.rotation) * selectedMarker.transform.rotation;
                 }
                 break;
         }

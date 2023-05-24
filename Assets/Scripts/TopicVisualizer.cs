@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Robotics.ROSTCPConnector;
 
+// TopicVisualizer is attached to individual topic selectors in the UI to enable and disable selected topics.
 public class TopicVisualizer : MonoBehaviour
 {
     public RosTopicState topicState;

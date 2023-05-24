@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+// The UI class handles the main UI logic of the application.
 public class UI : MonoBehaviour
 {
     private enum State
@@ -218,12 +219,7 @@ public class UI : MonoBehaviour
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
             if (menuUI.baseLink.text != "")
             {
-                rosInterface.PublishPoseStampedMsg(
-                    position,
-                    heading,
-                    menuUI.baseLink.text,
-                    menuUI.poseTopic.text
-                );
+                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
             }
         }
     }

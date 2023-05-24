@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+// ButtonPressed adds the capability of detecting start of button press and end of button press.
+// The default Button class only detects end of press.
 public class ButtonPressed : Button, IPointerDownHandler, IPointerUpHandler
 {
     public enum State

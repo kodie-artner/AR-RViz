@@ -5,6 +5,7 @@ using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Rosgraph;
 using RosMessageTypes.Geometry;
 
+// ROSInterface is a interface between ROSConnection and other scripts for common calls to ROS.
 public class ROSInterface : MonoBehaviour
 {
     private static ROSInterface _instance;
@@ -37,12 +38,7 @@ public class ROSInterface : MonoBehaviour
         PublishPoseStampedMsg(position, rotation, frame, topic);
     }
 
-    public void PublishPoseStampedMsg(
-        Vector3 position,
-        Quaternion rotation,
-        string frame,
-        string topic
-    )
+    public void PublishPoseStampedMsg(Vector3 position, Quaternion rotation, string frame, string topic)
     {
         PoseStampedMsg msg = new RosMessageTypes.Geometry.PoseStampedMsg();
         msg.header.frame_id = frame;

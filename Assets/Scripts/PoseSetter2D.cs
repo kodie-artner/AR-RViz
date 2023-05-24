@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+// PoseSetter2D handles creating 2d poses in the real world. First by select the position on the floor,
+// then by selecting the heading.
 [RequireComponent(typeof(ARRaycastManager))]
 [RequireComponent(typeof(ARPlaneManager))]
 public class PoseSetter2D : MonoBehaviour
@@ -17,8 +19,7 @@ public class PoseSetter2D : MonoBehaviour
         SelectingRotation
     }
 
-    private const TrackableType trackableTypes =
-        TrackableType.FeaturePoint | TrackableType.PlaneWithinPolygon;
+    private const TrackableType trackableTypes = TrackableType.FeaturePoint | TrackableType.PlaneWithinPolygon;
     private const float floorOffset = 0.01f;
     private GameObject target2d;
     private GameObject arrow;
@@ -33,11 +34,7 @@ public class PoseSetter2D : MonoBehaviour
 
     void Awake()
     {
-        target2d = Instantiate(
-            Resources.Load("Prefabs/target2d") as GameObject,
-            Vector3.zero,
-            Quaternion.identity
-        );
+        target2d = Instantiate(Resources.Load("Prefabs/target2d") as GameObject, Vector3.zero, Quaternion.identity);
         arrow = new GameObject();
     }
 
@@ -48,10 +45,7 @@ public class PoseSetter2D : MonoBehaviour
 
         Camera camera = Camera.main;
         raycastPosition = new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 2); // Center of Screen
-        arrowDrawing = Drawing3dManager.CreateDrawing(
-            -1,
-            Resources.Load("ArrowMaterial") as Material
-        );
+        arrowDrawing = Drawing3dManager.CreateDrawing(-1, Resources.Load("ArrowMaterial") as Material);
         arrowDrawing.transform.SetParent(arrow.transform);
         arrowDrawing.DrawArrow(
             arrow.transform.position,

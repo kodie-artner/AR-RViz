@@ -51,12 +51,8 @@ namespace RosMessageTypes.Visualization
                 ROSConnection
                     .GetOrCreateInstance()
                     .Subscribe<InteractiveMarkerInitMsg>(topic + "_full", AddInitMessage);
-                ROSConnection
-                    .GetOrCreateInstance()
-                    .Subscribe<InteractiveMarkerUpdateMsg>(topic, AddMessage);
-                ROSConnection
-                    .GetOrCreateInstance()
-                    .RegisterPublisher<InteractiveMarkerFeedbackMsg>(feedbackTopic);
+                ROSConnection.GetOrCreateInstance().Subscribe<InteractiveMarkerUpdateMsg>(topic, AddMessage);
+                ROSConnection.GetOrCreateInstance().RegisterPublisher<InteractiveMarkerFeedbackMsg>(feedbackTopic);
             }
 
             void AddMessage(InteractiveMarkerUpdateMsg message)

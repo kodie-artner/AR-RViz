@@ -56,9 +56,7 @@ namespace Unity.Robotics.Visualizations
                     GUILayout.Label("Waiting for messages...");
                 }
 
-                foreach (
-                    KeyValuePair<string, Dictionary<int, Drawing3d>> element in m_DrawingNamespaces
-                )
+                foreach (KeyValuePair<string, Dictionary<int, Drawing3d>> element in m_DrawingNamespaces)
                 {
                     string key = element.Key;
                     bool hidden = m_HiddenNamespaces.Contains(key);
@@ -98,12 +96,7 @@ namespace Unity.Robotics.Visualizations
                 switch (marker.action)
                 {
                     case MarkerMsg.DELETEALL:
-                        foreach (
-                            Dictionary<
-                                int,
-                                Drawing3d
-                            > namespaceToDestroy in m_DrawingNamespaces.Values
-                        )
+                        foreach (Dictionary<int, Drawing3d> namespaceToDestroy in m_DrawingNamespaces.Values)
                             foreach (Drawing3d drawingToDestroy in namespaceToDestroy.Values)
                                 drawingToDestroy.Destroy();
                         m_DrawingNamespaces.Clear();
@@ -122,9 +115,7 @@ namespace Unity.Robotics.Visualizations
                         if (marker.lifetime.sec == 0 && marker.lifetime.nanosec == 0)
                             drawing.ClearDuration();
                         else
-                            drawing.SetDuration(
-                                marker.lifetime.sec + marker.lifetime.nanosec / 1E9f
-                            );
+                            drawing.SetDuration(marker.lifetime.sec + marker.lifetime.nanosec / 1E9f);
                         drawing.Clear();
                         Draw<FLU>(marker, drawing);
                         break;
@@ -174,16 +165,9 @@ namespace Unity.Robotics.Visualizations
                             startPoint = marker.pose.position.From<C>();
                             endPoint =
                                 startPoint
-                                + marker.pose.orientation.From<C>()
-                                    * Vector3.forward
-                                    * (float)marker.scale.x;
+                                + marker.pose.orientation.From<C>() * Vector3.forward * (float)marker.scale.x;
 
-                            drawing.DrawArrow(
-                                startPoint,
-                                endPoint,
-                                marker.color.ToUnityColor(),
-                                (float)marker.scale.y
-                            );
+                            drawing.DrawArrow(startPoint, endPoint, marker.color.ToUnityColor(), (float)marker.scale.y);
                         }
                         break;
                     case MarkerMsg.CUBE:
@@ -275,11 +259,7 @@ namespace Unity.Robotics.Visualizations
                                 Color32 color = marker.color.ToUnityColor();
                                 for (int Idx = 0; Idx < marker.points.Length; ++Idx)
                                 {
-                                    drawing.DrawCuboid(
-                                        marker.points[Idx].From<C>(),
-                                        cubeScale,
-                                        color
-                                    );
+                                    drawing.DrawCuboid(marker.points[Idx].From<C>(), cubeScale, color);
                                 }
                             }
                         }
@@ -347,11 +327,7 @@ namespace Unity.Robotics.Visualizations
                         }
                         break;
                     case MarkerMsg.TEXT_VIEW_FACING:
-                        drawing.DrawLabel(
-                            marker.text,
-                            marker.pose.position.From<C>(),
-                            marker.color.ToUnityColor()
-                        );
+                        drawing.DrawLabel(marker.text, marker.pose.position.From<C>(), marker.color.ToUnityColor());
                         break;
                     case MarkerMsg.MESH_RESOURCE:
                         break;
