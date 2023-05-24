@@ -77,8 +77,6 @@ namespace RosMessageTypes.Visualization
 
             void AddInitMessage(InteractiveMarkerInitMsg msg)
             {
-                Debug.Log("Recieved Interactive Marker init");
-                RemoveAllMarkers();
                 foreach (InteractiveMarkerMsg markerMsg in msg.markers)
                 {
                     if (!markers_.ContainsKey(markerMsg.name))
@@ -91,17 +89,6 @@ namespace RosMessageTypes.Visualization
                     }
                     markers_[markerMsg.name].Initialize(markerMsg);
                 }
-            }
-
-            private void RemoveAllMarkers()
-            {
-                // foreach (KeyValuePair<string, InteractiveMarker> entry in markers_)
-                // {
-                //     Destroy(entry.Value.gameObject);
-
-                //     // Remove the entry from the dictionary
-                //     markers_.Remove(entry.Key);
-                // }
             }
 
             public void SetDrawingEnabled(bool enabled)

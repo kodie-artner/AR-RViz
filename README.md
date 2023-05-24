@@ -150,6 +150,10 @@ you'll need to add it to the DefaultVisualizationSuite in the main scene.
 Get the ip address of your device and check if you can ping it from the robot.
 - If the visualizations are lagging, select fewer topics or downsample the point clouds.
 
+## Dependencies
+
+This project is dependent on a forked [ROS-TCP-Connector](git@github.com:kodie-artner/ROS-TCP-Connector.git)
+
 ## Contributing
 
 Feel free to open a pr if you have a bug fix or enhancement. See the issue tracker for a list of known bugs

@@ -18,6 +18,7 @@ public class InteractiveMarker : MonoBehaviour
     string frame_id = "";
     Transform map;
     public bool publish = false;
+    private Drawing3d drawing;
 
     // Start is called before the first frame update
     void Awake()
@@ -25,6 +26,14 @@ public class InteractiveMarker : MonoBehaviour
         ros = ROSConnection.GetOrCreateInstance();
     }
 
+    void Start()
+    {
+        drawing = Drawing3dManager.CreateDrawing();
+        drawing.transform.SetParent(this.transform);
+        drawing.transform.localPosition = Vector3.zero;
+        drawing.transform.localRotation = Quaternion.identity;
+        DrawAxisVectors();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -44,6 +53,24 @@ public class InteractiveMarker : MonoBehaviour
         {
             transform.localScale = Vector3.one;
         }
+    }
+
+    public void DrawAxisVectors()
+    {
+        Vector3 x, y, z;
+        float size = 0.15f;
+
+        x = new Vector3<FLU>(1, 0, 0).toUnity * size;
+        y = new Vector3<FLU>(0, 1, 0).toUnity * size;
+        z = new Vector3<FLU>(0, 0, 1).toUnity * size;
+
+        float thickness = 0.1f * size;
+        float arrowheadScale = 2;
+        float arrowheadGradient = .5f;
+        drawing.DrawArrow(Vector3.zero, x, Color.red, thickness, arrowheadScale, arrowheadGradient);
+        drawing.DrawArrow(Vector3.zero, y, Color.green, thickness, arrowheadScale, arrowheadGradient);
+        drawing.DrawArrow(Vector3.zero, z, Color.blue, thickness, arrowheadScale, arrowheadGradient);
+        drawing.DrawCuboid(Vector3.zero, new Vector3(.03f,.03f,.03f), Color.white);
     }
 
     public void UpdatePosition(Vector3 position)
