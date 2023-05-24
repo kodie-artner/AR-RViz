@@ -9,6 +9,7 @@ public class ROSInterface : MonoBehaviour
 {
     private static ROSInterface _instance;
     private ROSConnection ros;
+    private string poseTopicRegistered = "";
 
     public static ROSInterface GetOrCreateInstance()
     {
@@ -54,7 +55,16 @@ public class ROSInterface : MonoBehaviour
 
     void PublishPoseStampedMsg(RosMessageTypes.Geometry.PoseStampedMsg msg, string topic)
     {
-        ros.RegisterPublisher<PoseStampedMsg>(topic);
         ros.Publish(topic, msg);
+    }
+
+    public void RegisterPoseTopicIfNotRegistered(string topic)
+    {
+        // Check if Pose topic is set and register the topic is so
+        if (topic != "" && poseTopicRegistered != topic)
+        {
+            ros.RegisterPublisher<PoseStampedMsg>(topic);
+            poseTopicRegistered = topic;
+        }
     }
 }

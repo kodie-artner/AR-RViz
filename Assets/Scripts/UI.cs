@@ -27,7 +27,7 @@ public class UI : MonoBehaviour
     public GameObject menuPanel;
 
     private State state = State.View;
-    
+
     private Dictionary<State, Button> stateButtons;
     private Button currentlyHighlightedButton;
     private ROSInterface rosInterface;
@@ -38,7 +38,7 @@ public class UI : MonoBehaviour
 
     void Start()
     {
-        stateButtons = new Dictionary<State, Button> { 
+        stateButtons = new Dictionary<State, Button> {
             {State.QRCode, qrCodeButton}, {State.Localize,localizeButton}, {State.Pose,poseButton}, {State.Manipulate, manipulateButton}};
 
         rosInterface = ROSInterface.GetOrCreateInstance();
@@ -63,20 +63,20 @@ public class UI : MonoBehaviour
         {
             throw new NullReferenceException("poseSetter2D object is null.");
         }
-        
+
         qrCodeButton.onClick.AddListener(() => OnChangeStateClick(State.QRCode));
         localizeButton.onClick.AddListener(() => OnChangeStateClick(State.Localize));
         poseButton.onClick.AddListener(() => OnChangeStateClick(State.Pose));
         manipulateButton.onClick.AddListener(() => OnChangeStateClick(State.Manipulate));
         menuButton.onClick.AddListener(OnMenuButtonClick);
-       
+
         actionButton.normalColor = normalColor;
         actionButton.highlightedColor = highlightedColor;
 
         // Start in QR Code Mode
         ChangeState(State.QRCode);
     }
-    
+
     void Update()
     {
         switch (state)
@@ -259,7 +259,7 @@ public class UI : MonoBehaviour
         // If the newState equals the current state or is, set the newState to View mode
         if (newState == this.state || newState == State.View)
         {
-            newState = State.View;   
+            newState = State.View;
         }
         // Else set the new state button to the highlighted color
         else
@@ -273,6 +273,7 @@ public class UI : MonoBehaviour
     {
         if (menuPanel.activeSelf)
         {
+            rosInterface.RegisterPoseTopicIfNotRegistered(menuUI.poseTopic.text);
             menuPanel.SetActive(false);
         }
         else
