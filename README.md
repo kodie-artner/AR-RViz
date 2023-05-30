@@ -1,11 +1,13 @@
 # ARRViz - Augmented Reality Robot Visualization
+<img src="Assets/Images/app_icon.png" alt="Image description" width="150" height="150" />
 
 This Unity project allows you to view ros topics overlayed  on a real robot in augmented reality.
 
 This project started out as a hackathon project for Cobalt Robotics. Check out what they are doing at
 [https://www.cobaltrobotics.com](https://www.cobaltrobotics.com)
 
-[pic](picture)
+<img src="Media/gif2.gif" width="138" height="300" />
+<img src="Media/door.png" width="138" height="300" />
 
 ## Compatibility
 
@@ -116,6 +118,8 @@ Topics: The topics section allows you to choose which topics are shown in the vi
 it means there isn't a visualizer for that topic type. Check the creatign visualizations sections to add custom
 visualizations.
 
+<img src="Media/menu_options.gif" width="276" height="600" />
+
 #### Usage
 
 Scan the room with the phone to make sure the phone is well localized. The better it is scanned, the better
@@ -126,6 +130,8 @@ the robot. There are two ways to do this, with the barcode scanner or by manuall
 
 QR Code: Select the QR code mode on the bottom right, make sure the camera is in good view of the code,
 and then press and hold the action button until the green overlay appears.
+
+<img src="Media/qr_code.gif" width="138" height="300" />
 
 Manual Localize: Select the localize button, move the target to the base link on the robot and then press and hold
 the action button. While holding, move the phone to set the direction of the base link.
@@ -138,6 +144,8 @@ see a crosshair in the center of the screen. Point it towards an interactive mar
 Now press the action button and the interactive marker will follow the motion of of the phone.
 Note: If you obscure the cameras, the localization may drift. Be sure to have safeties on the robot in case of drift.
 
+<img src="Media/interactive_markers.gif" width="276" height="600" />
+
 ## Visualizations
 
 The visualizations of topics can be edited in the source code so that topics show are visualized in different ways.
@@ -149,6 +157,9 @@ you'll need to add it to the DefaultVisualizationSuite in the main scene.
 - If it doesn't connect or you don't see any topics appear, make sure there aren't any firewalls up.
 Get the ip address of your device and check if you can ping it from the robot.
 - If the visualizations are lagging, select fewer topics or downsample the point clouds.
+- If it is still lagging after downsampling, check if the /tf topic is at really high. All the messages have to go
+through the tcp port so if /tf is at say 13,000 hz which was the case for me when I was using the
+static_transform_publisher, it will clog up the port.
 
 ## Dependencies
 
