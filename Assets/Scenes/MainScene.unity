@@ -483,8 +483,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ros2: 0
-  m_RosIPAddress: 
-  m_RosPort: 0
+  m_RosIPAddress: 10.0.0.203
+  m_RosPort: 10000
   m_ConnectOnStart: 0
   m_KeepaliveTime: 1
   m_NetworkTimeoutSeconds: 2
@@ -492,7 +492,6 @@ MonoBehaviour:
   m_ShowHUD: 0
   m_TFTopics:
   - /tf
-  - /tf_static
   listenForTFMessages: 1
 --- !u!4 &1280427715
 Transform:
@@ -539,6 +538,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1964391933}
+  - {fileID: 2093085530}
   m_Father: {fileID: 1513277775}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52ab7220652a3a4bb29ca9a1d4b91c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Priority: -1
+  m_Priority: 1
 --- !u!1 &1480581804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1239,7 +1239,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Topic: 
   m_ID: 1964391934-0
-  interactiveMarkerPrefab: {fileID: 5907759259597916078, guid: 442f993931de54c9fb0e26f8e35b4b8e, type: 3}
+  interactiveMarkerPrefab: {fileID: 3890391196652854097, guid: 99f372ef480ca43fb89697b8fab02396, type: 3}
+--- !u!1 &2093085529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2093085530}
+  - component: {fileID: 2093085531}
+  m_Layer: 0
+  m_Name: PointCloud2Visualizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2093085530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093085529}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1467664909}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2093085531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093085529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9869b969f021440789a37afecf3ffca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Topic: 
+  m_ID: 2093085531-0
+  m_TFTrackingSettings:
+    tfTopic: /tf
+  m_ColorModeSetting: 0
+  pointsize: 0.01
 --- !u!1001 &7604864718887160441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1998,6 +2048,10 @@ PrefabInstance:
     - target: {fileID: 7604864719241656457, guid: f35918c226c6b4c008fbc6c94796ec8a, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604864719244111474, guid: f35918c226c6b4c008fbc6c94796ec8a, type: 3}
+      propertyPath: m_Text
+      value: 10.0.0.203
       objectReference: {fileID: 0}
     - target: {fileID: 7604864719244111475, guid: f35918c226c6b4c008fbc6c94796ec8a, type: 3}
       propertyPath: m_AnchorMax.y

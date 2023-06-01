@@ -1,5 +1,7 @@
-# ARRViz - Augmented Reality Robot Visualization
-<img src="Assets/Images/app_icon.png" alt="Image description" width="150" height="150" />
+<div style="position: relative;">
+  <h1>ARRViz - Augmented Reality Robot Visualization</h1>
+  <img src="Assets/Images/app_icon.png" style="position: absolute; top: 0; right: 0; width: 50px; height: 50px;" />
+</div>
 
 This Unity project allows you to view ros topics overlayed  on a real robot in augmented reality.
 
@@ -39,7 +41,6 @@ is compatible with the app.
 3. Select the base link of the robot.
 4. manually localize robot.
 5. Select topics to view.
-
 
 ### Assumptions
 
@@ -152,6 +153,11 @@ The visualizations of topics can be edited in the source code so that topics sho
 To edit a visualization, check out the SensorVisualizers folder for examples. Once you create a new visualizer,
 you'll need to add it to the DefaultVisualizationSuite in the main scene.
 
+## Future Features
+
+- Apple Headset support
+- Meta Quest 3 support
+
 ## Debugging
 
 - If it doesn't connect or you don't see any topics appear, make sure there aren't any firewalls up.
@@ -172,7 +178,7 @@ and possible enhancements.
 
 ### Linter
 
-Currently using csharpier to format the code.
+csharpier
 
 ## Similar Projects
 

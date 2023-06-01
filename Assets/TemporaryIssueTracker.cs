@@ -6,11 +6,12 @@ public class FeatureList : MonoBehaviour
 {
     // Feature list
 
-    // Organize Code
     // Allow topics to pick size of points/color
     // Improve visualizations
     // Remove auto connect to my ip
+    // Add height to menu text inputs
     //
+    // Add child mode to interactive marker movement type
     // Add Occlusion Option
     // Refresh topics
     // Fix qr code scan so it doesn't need a base frame for rotations

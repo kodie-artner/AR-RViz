@@ -31,7 +31,6 @@ public class Localizer
 
         // Convert targetHeading into quaternion
         Quaternion rotation = Quaternion.Euler(0, targetHeading, 0);
-
         mapTransform.position = targetPosition - rotation * Quaternion.Inverse(linkRotation) * T_map_link.translation;
         mapTransform.rotation = rotation * Quaternion.Inverse(linkRotation);
     }
