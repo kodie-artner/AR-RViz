@@ -1,7 +1,5 @@
-<div style="position: relative;">
-  <h1>ARRViz - Augmented Reality Robot Visualization</h1>
-  <img src="Assets/Images/app_icon.png" style="position: absolute; top: 0; right: 0; width: 50px; height: 50px;" />
-</div>
+# AR-RViz : Augmented Reality Robot Visualization
+
 
 This Unity project allows you to view ros topics overlayed  on a real robot in augmented reality.
 
@@ -46,7 +44,7 @@ is compatible with the app.
 
 For the app to work correctly, your robot needs to be localized to a map frame with the tf available.
 If you don't have localization, you can still use the app but the phone will need to be localized anytime
-the robot is moved via the barcode scanner or manual localization.
+the robot is moved via the QR code scanner or manual localization.
 
 Robot and mobile device need to be on the same network.
 
@@ -127,7 +125,7 @@ Scan the room with the phone to make sure the phone is well localized. The bette
 the phone will stay localized with the robot.
 
 Once ros is connected, the settings inputted, and the topics selected, you can now localize the phone to
-the robot. There are two ways to do this, with the barcode scanner or by manually selecting the base_link frame.
+the robot. There are two ways to do this, with the QR code scanner or by manually selecting the base_link frame.
 
 QR Code: Select the QR code mode on the bottom right, make sure the camera is in good view of the code,
 and then press and hold the action button until the green overlay appears.
@@ -153,8 +151,18 @@ The visualizations of topics can be edited in the source code so that topics sho
 To edit a visualization, check out the SensorVisualizers folder for examples. Once you create a new visualizer,
 you'll need to add it to the DefaultVisualizationSuite in the main scene.
 
+Many of the visualizations are untested so if you find one that doesn't look like it is working correctly or just 
+doesn't look good, feel free to open an issue.
+
 ## Future Features
 
+- Change visualization settings, point size, color, etc.
+- Support for custom QR Codes
+- Importing urdf's from ros
+- Save/Load configurations
+- Visualize TF
+- Better UI when losing connection and reconnecting to ros
+- More Modes for manipulating interactive markers. Position only, rotation only, etc.
 - Apple Headset support
 - Meta Quest 3 support
 
