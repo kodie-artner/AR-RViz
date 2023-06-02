@@ -87,7 +87,7 @@ public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
 
             Color depthColor = Color.HSVToRGB(Mathf.InverseLerp(lastMinZ, lastMaxZ, z), 1, 1);
 
-            drawing.DrawTriangle(unityPoint + new Vector3(pointsize, 0, 0), unityPoint + new Vector3(pointsize, pointsize, 0), unityPoint + new Vector3(0, pointsize, 0), depthColor);
+            drawing.DrawCuboid(unityPoint, Vector3.one * pointsize, depthColor);
             //pointCloud.AddPoint(unityPoint, depthColor, pointsize);
             if (z < currentMinZ)
             {
