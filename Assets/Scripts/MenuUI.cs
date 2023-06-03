@@ -27,6 +27,10 @@ public class MenuUI : MonoBehaviour
 
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
     public TMP_InputField poseTopic;
+
+    // Link to be used as frame_id in PoseStampedMsg
+    public TMP_InputField poseLink;
+
     public Toggle isROS2Toggle;
 
     // IP address of the ros_tcp_endpoint node

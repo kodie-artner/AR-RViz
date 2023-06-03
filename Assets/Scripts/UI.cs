@@ -14,10 +14,14 @@ public class UI : MonoBehaviour
         Pose,
         Manipulate,
     }
-
-    // Color is 5DCB83
-    public Color highlightedColor;
-    public Color normalColor = Color.white;
+    // Color Pallet
+    // Mint: 4fb286 : (79, 178, 134)
+    // Gunmetal: 143642 : (20, 54, 66)
+    // Anit-flash White : ebebeb : (235, 235, 235)
+    // Cool Gray: 7e7f9a : (126, 127, 154)
+    // Bittersweet: f87666 : (248, 118, 102)
+    public Color highlightedColor = new Color(79, 178, 134);
+    public Color normalColor = new Color(235, 235, 235);
     public Button qrCodeButton;
     public Button localizeButton;
     public Button poseButton;
@@ -199,7 +203,7 @@ public class UI : MonoBehaviour
         {
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
-            if (menuUI.baseLink.text == "")
+            if (menuUI.baseLink.text != "")
             {
                 localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
             }
@@ -217,9 +221,10 @@ public class UI : MonoBehaviour
         {
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
-            if (menuUI.baseLink.text != "")
+            // Need to convert position and heading to proper transform
+            if (menuUI.poseTopic.text != "" && menuUI.poseLink.text != "")
             {
-                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.baseLink.text, menuUI.poseTopic.text);
+                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.poseLink.text, menuUI.poseTopic.text);
             }
         }
     }

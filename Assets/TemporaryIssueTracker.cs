@@ -6,9 +6,9 @@ public class FeatureList : MonoBehaviour
 {
     // Feature list
 
-    // Allow topics to pick size of points/color
     // Remove auto connect to my ip
     //
+    // Allow topics to pick size of points/color
     // Add child mode to interactive marker movement type
     // Add Occlusion Option
     // Refresh topics

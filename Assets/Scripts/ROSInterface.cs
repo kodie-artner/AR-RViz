@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Rosgraph;
 using RosMessageTypes.Geometry;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 
 // ROSInterface is a interface between ROSConnection and other scripts for common calls to ROS.
 public class ROSInterface : MonoBehaviour
@@ -11,6 +12,7 @@ public class ROSInterface : MonoBehaviour
     private static ROSInterface _instance;
     private ROSConnection ros;
     private string poseTopicRegistered = "";
+    private Transform mapTransform;
 
     public static ROSInterface GetOrCreateInstance()
     {
@@ -30,6 +32,7 @@ public class ROSInterface : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
+        mapTransform = GameObject.FindGameObjectWithTag("Map").transform;
     }
 
     public void PublishPoseStampedMsg(Vector3 position, float angle, string frame, string topic)
@@ -40,18 +43,32 @@ public class ROSInterface : MonoBehaviour
 
     public void PublishPoseStampedMsg(Vector3 position, Quaternion rotation, string frame, string topic)
     {
+        // Convert unity transform into ros and frame transform.
+        // TODO: Do this with math just multiplying transforms
+        TFFrame frameTF = TFSystem.instance.GetTransform(frame_id: frame, time: 0);
+        GameObject frameObj = new GameObject();
+        frameObj.transform.SetParent(mapTransform);
+        frameObj.transform.localPosition = frameTF.translation;
+        frameObj.transform.localRotation = frameTF.rotation;
+        // Create pose object with unity coordinate frame
+        GameObject poseObj = new GameObject();
+        poseObj.transform.position = position;
+        poseObj.transform.rotation = rotation;
+
+        // Get poseObj in the header frame
+        poseObj.transform.SetParent(frameObj.transform);
+
         PoseStampedMsg msg = new RosMessageTypes.Geometry.PoseStampedMsg();
         msg.header.frame_id = frame;
-        // TODO: Get time from Tf header, update ros to set this as a field for easy access
+        // TODO: Get time from Tf header, update TFSystem to make this easily accessible
         //msg.header.stamp = ;
-        msg.pose.position.x = position.x;
-        msg.pose.position.y = position.y;
-        msg.pose.position.z = position.z;
-        msg.pose.orientation.x = rotation.x;
-        msg.pose.orientation.y = rotation.y;
-        msg.pose.orientation.z = rotation.z;
-        msg.pose.orientation.w = rotation.w;
+        msg.pose.position = poseObj.transform.localPosition.To<FLU>();
+        msg.pose.orientation = poseObj.transform.localRotation.To<FLU>();
         PublishPoseStampedMsg(msg, topic);
+
+        // Destroy temporary game objects
+        Destroy(frameObj);
+        Destroy(poseObj);
     }
 
     void PublishPoseStampedMsg(RosMessageTypes.Geometry.PoseStampedMsg msg, string topic)
