@@ -9,58 +9,134 @@ using UnityEngine;
 
 public class PointCloudVisualizer : DrawingVisualizer<PointCloudMsg>
 {
-
     public string RosMessageName => MessageRegistry.GetRosMessageName<PointCloudMsg>();
 
     VisualizerSettingsGeneric<PointCloudMsg> m_Settings;
-    public VisualizerSettingsGeneric<PointCloudMsg> Settings { get => m_Settings; set => m_Settings = value; }
+    public VisualizerSettingsGeneric<PointCloudMsg> Settings
+    {
+        get => m_Settings;
+        set => m_Settings = value;
+    }
     public override string Name => (string.IsNullOrEmpty(m_Topic) ? "" : $"({m_Topic}) ") + Settings.name;
 
     [SerializeField]
     protected TFTrackingSettings m_TFTrackingSettings = new TFTrackingSettings { tfTopic = "/tf" };
-    public TFTrackingSettings TFTrackingSettings { get => m_TFTrackingSettings; set => m_TFTrackingSettings = value; }
+    public TFTrackingSettings TFTrackingSettings
+    {
+        get => m_TFTrackingSettings;
+        set => m_TFTrackingSettings = value;
+    }
 
     public Action CreateGUI(PointCloudMsg message, MessageMetadata meta)
     {
         return null;
     }
+
     [HideInInspector, SerializeField]
     PointCloud2VisualizerSettings.ColorMode m_ColorMode;
-    public PointCloud2VisualizerSettings.ColorMode ColorMode { get => m_ColorMode; set => m_ColorMode = value; }
+    public PointCloud2VisualizerSettings.ColorMode ColorMode
+    {
+        get => m_ColorMode;
+        set => m_ColorMode = value;
+    }
 
-    public string[] Channels { get => m_Channels; set => m_Channels = value; }
+    public string[] Channels
+    {
+        get => m_Channels;
+        set => m_Channels = value;
+    }
     string[] m_Channels;
-    public string HueChannel { get => m_HueChannel; set => m_HueChannel = value; }
+    public string HueChannel
+    {
+        get => m_HueChannel;
+        set => m_HueChannel = value;
+    }
     string m_HueChannel = "";
-    public string RgbChannel { get => m_RgbChannel; set => m_RgbChannel = value; }
+    public string RgbChannel
+    {
+        get => m_RgbChannel;
+        set => m_RgbChannel = value;
+    }
     string m_RgbChannel = "";
-    public string RChannel { get => m_RChannel; set => m_RChannel = value; }
+    public string RChannel
+    {
+        get => m_RChannel;
+        set => m_RChannel = value;
+    }
     string m_RChannel = "";
-    public string GChannel { get => m_GChannel; set => m_GChannel = value; }
+    public string GChannel
+    {
+        get => m_GChannel;
+        set => m_GChannel = value;
+    }
     string m_GChannel = "";
-    public string BChannel { get => m_BChannel; set => m_BChannel = value; }
+    public string BChannel
+    {
+        get => m_BChannel;
+        set => m_BChannel = value;
+    }
     string m_BChannel = "";
-    public string SizeChannel { get => m_SizeChannel; set => m_SizeChannel = value; }
+    public string SizeChannel
+    {
+        get => m_SizeChannel;
+        set => m_SizeChannel = value;
+    }
     string m_SizeChannel = "";
 
-    public float[] HueRange { get => m_HueRange; set => m_HueRange = value; }
+    public float[] HueRange
+    {
+        get => m_HueRange;
+        set => m_HueRange = value;
+    }
     float[] m_HueRange = { 0, 100 };
-    public float[] RRange { get => m_RRange; set => m_RRange = value; }
+    public float[] RRange
+    {
+        get => m_RRange;
+        set => m_RRange = value;
+    }
     float[] m_RRange = { 0, 100 };
-    public float[] GRange { get => m_GRange; set => m_GRange = value; }
+    public float[] GRange
+    {
+        get => m_GRange;
+        set => m_GRange = value;
+    }
     float[] m_GRange = { 0, 100 };
-    public float[] BRange { get => m_BRange; set => m_BRange = value; }
+    public float[] BRange
+    {
+        get => m_BRange;
+        set => m_BRange = value;
+    }
     float[] m_BRange = { 0, 100 };
-    public float[] SizeRange { get => m_SizeRange; set => m_SizeRange = value; }
+    public float[] SizeRange
+    {
+        get => m_SizeRange;
+        set => m_SizeRange = value;
+    }
     float[] m_SizeRange = { 0, 100 };
-    public float Size { get => m_Size; set => m_Size = value; }
+    public float Size
+    {
+        get => m_Size;
+        set => m_Size = value;
+    }
     float m_Size = 0.05f;
 
-    public bool UseRgbChannel { get => m_UseRgbChannel; set => m_UseRgbChannel = value; }
+    public bool UseRgbChannel
+    {
+        get => m_UseRgbChannel;
+        set => m_UseRgbChannel = value;
+    }
     bool m_UseRgbChannel = true;
-    public bool UseSeparateRgb { get => m_UseSeparateRgb; set => m_UseSeparateRgb = value; }
+    public bool UseSeparateRgb
+    {
+        get => m_UseSeparateRgb;
+        set => m_UseSeparateRgb = value;
+    }
     bool m_UseSeparateRgb = true;
-    public bool UseSizeChannel { get => m_UseSizeChannel; set => m_UseSizeChannel = value; }
+    public bool UseSizeChannel
+    {
+        get => m_UseSizeChannel;
+        set => m_UseSizeChannel = value;
+    }
     bool m_UseSizeChannel = true;
 
     public override void Draw(Drawing3d drawing, PointCloudMsg message, MessageMetadata meta)
@@ -96,18 +172,31 @@ public class PointCloudVisualizer : DrawingVisualizer<PointCloudMsg>
                     case PointCloud2VisualizerSettings.ColorMode.SeparateRGB:
                         if (m_RChannel.Length > 0 && m_GChannel.Length > 0 && m_BChannel.Length > 0)
                         {
-                            var colR = Mathf.InverseLerp(m_RRange[0], m_RRange[1], message.channels[channelToIdx[m_RChannel]].values[i]);
+                            var colR = Mathf.InverseLerp(
+                                m_RRange[0],
+                                m_RRange[1],
+                                message.channels[channelToIdx[m_RChannel]].values[i]
+                            );
                             var r = Mathf.InverseLerp(0, 1, colR);
 
-                            var colG = Mathf.InverseLerp(m_GRange[0], m_GRange[1], message.channels[channelToIdx[m_GChannel]].values[i]);
+                            var colG = Mathf.InverseLerp(
+                                m_GRange[0],
+                                m_GRange[1],
+                                message.channels[channelToIdx[m_GChannel]].values[i]
+                            );
                             var g = Mathf.InverseLerp(0, 1, colG);
 
-                            var colB = Mathf.InverseLerp(m_BRange[0], m_BRange[1], message.channels[channelToIdx[m_BChannel]].values[i]);
+                            var colB = Mathf.InverseLerp(
+                                m_BRange[0],
+                                m_BRange[1],
+                                message.channels[channelToIdx[m_BChannel]].values[i]
+                            );
                             var b = Mathf.InverseLerp(0, 1, colB);
                             color = new Color(r, g, b, 1);
                         }
                         break;
                     case PointCloud2VisualizerSettings.ColorMode.CombinedRGB:
+
                         // uint8 (R,G,B) values packed into the least significant 24 bits, in order.
                         {
                             byte[] rgb = BitConverter.GetBytes(message.channels[channelToIdx[m_RgbChannel]].values[i]);

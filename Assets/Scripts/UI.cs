@@ -14,6 +14,7 @@ public class UI : MonoBehaviour
         Pose,
         Manipulate,
     }
+
     // Color Pallet
     // Mint: 4fb286 : (79, 178, 134)
     // Gunmetal: 143642 : (20, 54, 66)

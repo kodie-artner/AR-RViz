@@ -42,20 +42,6 @@ namespace Tests
             ros.Disconnect();
         }
 
-        // A Test behaves as an ordinary method
-        // [Test]
-        // public void TestSuiteSimplePasses()
-        // {
-        //     Debug.Log("simple test");
-        //     // Use the Assert class to test conditions
-        //     TFFrame T_map_link = TFSystem.instance.GetTransform(frame_id: "link_1", time: 0);
-        //      Debug.Log("simple test end");
-        //     Debug.Log(T_map_link.translation);
-        //     Debug.Log(T_map_link.rotation);
-        // }
-
-        // A UnityTest beha8ves like a coroutine in Play Mode.
-        // In Edit Mode you can use `yield return null;` to skip a frame.
         [UnityTest]
         public IEnumerator TestSuiteWithEnumeratorPasses()
         {
@@ -64,32 +50,42 @@ namespace Tests
             // Setup tf
             TFMessageMsg msg = new TFMessageMsg();
             msg.transforms = new TransformStampedMsg[2];
-            msg.transforms[1] = GetTransformMsg("map", "link_1", new Vector3<FLU>(new Vector3(5, 0, 0)), new Quaternion<FLU>(new Quaternion(0, 0, 0, 1)));
-            msg.transforms[0] = GetTransformMsg("link_1", "link_2", new Vector3<FLU>(new Vector3(9, 0, 0)), new Quaternion<FLU>(new Quaternion(0, 0, 0, 1)));
+            msg.transforms[1] = GetTransformMsg(
+                "map",
+                "link_1",
+                new Vector3<FLU>(new Vector3(5, 0, 0)),
+                new Quaternion<FLU>(new Quaternion(0, 0, 0, 1))
+            );
+            msg.transforms[0] = GetTransformMsg(
+                "link_1",
+                "link_2",
+                new Vector3<FLU>(new Vector3(9, 0, 0)),
+                new Quaternion<FLU>(new Quaternion(0, 0, 0, 1))
+            );
             TFSystem.instance.TFTopics["/tf"].ReceiveTF(msg);
 
             // Set map position
-            localizer.SetMapTransform(new Vector3(0,0,0), 0, "link_2");
+            localizer.SetMapTransform(new Vector3(0, 0, 0), 0, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(-14, 0, 0));
 
-            localizer.SetMapTransform(new Vector3(0,5,0), 0, "link_2");
+            localizer.SetMapTransform(new Vector3(0, 5, 0), 0, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(-14, 5, 0));
 
-            localizer.SetMapTransform(new Vector3(5,0,0), 0, "link_2");
+            localizer.SetMapTransform(new Vector3(5, 0, 0), 0, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(-9, 0, 0));
 
-            localizer.SetMapTransform(new Vector3(0,0,0), 180, "link_2");
+            localizer.SetMapTransform(new Vector3(0, 0, 0), 180, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(14, 0, 0));
 
-            localizer.SetMapTransform(new Vector3(0,0,0), 90, "link_2");
+            localizer.SetMapTransform(new Vector3(0, 0, 0), 90, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(0, 0, 14));
 
-            localizer.SetMapTransform(new Vector3(5,0,0), 90, "link_2");
+            localizer.SetMapTransform(new Vector3(5, 0, 0), 90, "link_2");
             Debug.Log(mapTransform.position);
             Vector3Equal(mapTransform.position, new Vector3(5, 0, 14));
             yield return null;
@@ -103,10 +99,30 @@ namespace Tests
             // Setup tf
             TFMessageMsg msg = new TFMessageMsg();
             msg.transforms = new TransformStampedMsg[4];
-            msg.transforms[0] = GetTransformMsg("map", "odom", new Vector3<FLU>(new Vector3(5, 0, 0)), new Quaternion<FLU>(new Quaternion(0, -0.4281827f, 0, -0.9036922f)));
-            msg.transforms[1] = GetTransformMsg("odom", "base_frame", new Vector3<FLU>(new Vector3(3.2f, 0, 8)), new Quaternion<FLU>(new Quaternion( 0, -0.3048106f, 0, -0.952413f)));
-            msg.transforms[2] = GetTransformMsg("base_frame", "head_frame", new Vector3<FLU>(new Vector3(0, 1.5f, 0)), new Quaternion<FLU>(new Quaternion( 0, 0, 0, 1)));
-            msg.transforms[3] = GetTransformMsg("head_frame", "qr_link", new Vector3<FLU>(new Vector3(0, 0.15f, 0)), new Quaternion<FLU>(new Quaternion( 0.938f, 0, 0, 0.3466353f)));
+            msg.transforms[0] = GetTransformMsg(
+                "map",
+                "odom",
+                new Vector3<FLU>(new Vector3(5, 0, 0)),
+                new Quaternion<FLU>(new Quaternion(0, -0.4281827f, 0, -0.9036922f))
+            );
+            msg.transforms[1] = GetTransformMsg(
+                "odom",
+                "base_frame",
+                new Vector3<FLU>(new Vector3(3.2f, 0, 8)),
+                new Quaternion<FLU>(new Quaternion(0, -0.3048106f, 0, -0.952413f))
+            );
+            msg.transforms[2] = GetTransformMsg(
+                "base_frame",
+                "head_frame",
+                new Vector3<FLU>(new Vector3(0, 1.5f, 0)),
+                new Quaternion<FLU>(new Quaternion(0, 0, 0, 1))
+            );
+            msg.transforms[3] = GetTransformMsg(
+                "head_frame",
+                "qr_link",
+                new Vector3<FLU>(new Vector3(0, 0.15f, 0)),
+                new Quaternion<FLU>(new Quaternion(0.938f, 0, 0, 0.3466353f))
+            );
             TFSystem.instance.TFTopics["/tf"].ReceiveTF(msg);
 
             GameObject tracker = new GameObject();
@@ -137,10 +153,14 @@ namespace Tests
         {
             float angle = Quaternion.Angle(first, second);
             Assert.That(angle, Is.EqualTo(0).Within(tolerance));
-
         }
 
-        TransformStampedMsg GetTransformMsg(string frame_id, string child_frame_id, Vector3<FLU> position, Quaternion<FLU> rotation)
+        TransformStampedMsg GetTransformMsg(
+            string frame_id,
+            string child_frame_id,
+            Vector3<FLU> position,
+            Quaternion<FLU> rotation
+        )
         {
             TransformStampedMsg transformMsg = new TransformStampedMsg();
             transformMsg.header.frame_id = frame_id;

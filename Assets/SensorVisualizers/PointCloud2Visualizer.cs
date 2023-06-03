@@ -9,16 +9,23 @@ using UnityEngine;
 
 public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
 {
-
     public string RosMessageName => MessageRegistry.GetRosMessageName<PointCloud2Msg>();
 
     VisualizerSettingsGeneric<PointCloud2Msg> m_Settings;
-    public VisualizerSettingsGeneric<PointCloud2Msg> Settings { get => m_Settings; set => m_Settings = value; }
+    public VisualizerSettingsGeneric<PointCloud2Msg> Settings
+    {
+        get => m_Settings;
+        set => m_Settings = value;
+    }
     public override string Name => (string.IsNullOrEmpty(m_Topic) ? "" : $"({m_Topic}) ") + Settings.name;
 
     [SerializeField]
     protected TFTrackingSettings m_TFTrackingSettings = new TFTrackingSettings { tfTopic = "/tf" };
-    public TFTrackingSettings TFTrackingSettings { get => m_TFTrackingSettings; set => m_TFTrackingSettings = value; }
+    public TFTrackingSettings TFTrackingSettings
+    {
+        get => m_TFTrackingSettings;
+        set => m_TFTrackingSettings = value;
+    }
 
     public Action CreateGUI(PointCloud2Msg message, MessageMetadata meta)
     {
@@ -34,15 +41,35 @@ public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
 
     [HideInInspector, SerializeField]
     ColorMode m_ColorModeSetting;
-    public ColorMode ColorModeSetting { get => m_ColorModeSetting; set => m_ColorModeSetting = value; }
-    public string[] Channels { get => m_Channels; set => m_Channels = value; }
+    public ColorMode ColorModeSetting
+    {
+        get => m_ColorModeSetting;
+        set => m_ColorModeSetting = value;
+    }
+    public string[] Channels
+    {
+        get => m_Channels;
+        set => m_Channels = value;
+    }
     string[] m_Channels;
 
-    public string XChannel { get => m_XChannel; set => m_XChannel = value; }
+    public string XChannel
+    {
+        get => m_XChannel;
+        set => m_XChannel = value;
+    }
     string m_XChannel = "x";
-    public string YChannel { get => m_YChannel; set => m_YChannel = value; }
+    public string YChannel
+    {
+        get => m_YChannel;
+        set => m_YChannel = value;
+    }
     string m_YChannel = "y";
-    public string ZChannel { get => m_ZChannel; set => m_ZChannel = value; }
+    public string ZChannel
+    {
+        get => m_ZChannel;
+        set => m_ZChannel = value;
+    }
     string m_ZChannel = "z";
 
     public float pointsize = 0.01f;

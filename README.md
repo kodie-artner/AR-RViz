@@ -12,7 +12,7 @@ open source package I created [ROS-TCP-Connector](git@github.com:kodie-artner/RO
 
 <p float="left">
   <img src="Media/overview.gif" height="400" width=180 />
-  <img src="Media/point_cloud_overlay.jpeg" height="400" /> 
+  <img src="Media/point_cloud_overlay.jpeg" height="400" />
 </p>
 
 ## Compatibility
@@ -122,7 +122,7 @@ or in the world. At the moment only this QR code will work:
 
 <p float="left">
   <img src="Assets/ImageTracking/robot_qr_code.png" height="100" width=100 />
-  <img src="Media/robot_qr_code_frame.png" height="100"  width=100 /> 
+  <img src="Media/robot_qr_code_frame.png" height="100"  width=100 />
 </p>
 
 **Base Link:** This should be the base link of the robot. Often times this is just called base_link.
@@ -200,6 +200,7 @@ More info can be found on building Unity projects [here](https://docs.unity3d.co
 - Visualize TF
 - Better UI when losing connection and reconnecting to ros
 - More Modes for manipulating interactive markers. Position only, rotation only, etc.
+- Add occlusion button so objects aren't rendered if a person/object is in front.
 - Apple Headset support
 - Meta Quest 3 support
 
@@ -223,6 +224,8 @@ and possible enhancements.
 ### Linter
 
 csharpier
+
+`dotnet csharpier <script_location>`
 
 ## Similar Projects
 

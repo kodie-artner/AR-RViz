@@ -9,16 +9,23 @@ using UnityEngine;
 
 public class LaserScanVisualizer : DrawingVisualizer<LaserScanMsg>
 {
-
     public string RosMessageName => MessageRegistry.GetRosMessageName<LaserScanMsg>();
 
     VisualizerSettingsGeneric<LaserScanMsg> m_Settings;
-    public VisualizerSettingsGeneric<LaserScanMsg> Settings { get => m_Settings; set => m_Settings = value; }
+    public VisualizerSettingsGeneric<LaserScanMsg> Settings
+    {
+        get => m_Settings;
+        set => m_Settings = value;
+    }
     public override string Name => (string.IsNullOrEmpty(m_Topic) ? "" : $"({m_Topic}) ") + Settings.name;
 
     [SerializeField]
     protected TFTrackingSettings m_TFTrackingSettings = new TFTrackingSettings { tfTopic = "/tf" };
-    public TFTrackingSettings TFTrackingSettings { get => m_TFTrackingSettings; set => m_TFTrackingSettings = value; }
+    public TFTrackingSettings TFTrackingSettings
+    {
+        get => m_TFTrackingSettings;
+        set => m_TFTrackingSettings = value;
+    }
 
     public Action CreateGUI(LaserScanMsg message, MessageMetadata meta)
     {
@@ -27,13 +34,27 @@ public class LaserScanVisualizer : DrawingVisualizer<LaserScanMsg>
 
     [SerializeField]
     bool m_UseIntensitySize;
-    public bool UseIntensitySize { get => m_UseIntensitySize; set => m_UseIntensitySize = value; }
+    public bool UseIntensitySize
+    {
+        get => m_UseIntensitySize;
+        set => m_UseIntensitySize = value;
+    }
+
     [HideInInspector, SerializeField]
     float m_PointRadius = 0.05f;
-    public float PointRadius { get => m_PointRadius; set => m_PointRadius = value; }
+    public float PointRadius
+    {
+        get => m_PointRadius;
+        set => m_PointRadius = value;
+    }
+
     [HideInInspector, SerializeField]
     float m_MaxIntensity = 100.0f;
-    public float MaxIntensity { get => m_MaxIntensity; set => m_MaxIntensity = value; }
+    public float MaxIntensity
+    {
+        get => m_MaxIntensity;
+        set => m_MaxIntensity = value;
+    }
 
     public enum ColorModeType
     {
@@ -44,7 +65,11 @@ public class LaserScanVisualizer : DrawingVisualizer<LaserScanMsg>
 
     [SerializeField]
     ColorModeType m_ColorMode;
-    public ColorModeType ColorMode { get => m_ColorMode; set => m_ColorMode = value; }
+    public ColorModeType ColorMode
+    {
+        get => m_ColorMode;
+        set => m_ColorMode = value;
+    }
 
     public override void Draw(Drawing3d drawing, LaserScanMsg message, MessageMetadata meta)
     {
@@ -64,7 +89,11 @@ public class LaserScanVisualizer : DrawingVisualizer<LaserScanMsg>
             switch (mode)
             {
                 case ColorModeType.Distance:
-                    c = Color.HSVToRGB(Mathf.InverseLerp(message.range_min, message.range_max, message.ranges[i]), 1, 1);
+                    c = Color.HSVToRGB(
+                        Mathf.InverseLerp(message.range_min, message.range_max, message.ranges[i]),
+                        1,
+                        1
+                    );
                     break;
                 case ColorModeType.Intensity:
                     c = new Color(1, message.intensities[i] / m_MaxIntensity, 0, 1);

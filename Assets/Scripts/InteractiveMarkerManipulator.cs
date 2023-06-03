@@ -181,7 +181,6 @@ public class InteractiveMarkerManipulator
             if (parent.CompareTag("InteractiveMarker"))
             {
                 return parent.GetComponent<InteractiveMarker>();
-                ;
             }
             parent = parent.parent;
         }

@@ -111,13 +111,12 @@ public class MenuUI : MonoBehaviour
         topicsShown = 0;
         foreach (KeyValuePair<string, TopicVisualizer> item in topics)
         {
-            // If no filter, show topic
+            // If no filter, show all topics
             if (filter == "")
             {
                 item.Value.gameObject.SetActive(true);
                 topicsShown++;
             }
-            // If
             else if (
                 !item.Key.ToLower().Contains(filter.ToLower())
                 && !item.Value.topicState.RosMessageName.ToLower().Contains(filter.ToLower())
