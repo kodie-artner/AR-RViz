@@ -1,6 +1,6 @@
 # AR-RViz : Augmented Reality Robot Visualization
 
-<img src="Assets/Images/icon_500_green_white.png" align="right" width="75"/>
+<img src="Assets/Images/icon_500_green_white.png" align="right" width="130"/>
 
 This Unity project allows you to view ros topics overlayed  on a real robot in augmented reality.
 
@@ -10,8 +10,10 @@ This project started out as a hackathon project for Cobalt Robotics. Check out w
 This project heavily utilizes the work done by Unity's simulation team and the fork of the their
 open source package I created [ROS-TCP-Connector](git@github.com:kodie-artner/ROS-TCP-Connector.git)
 
-<img src="Media/overview.gif" height="300" />
-<img src="Media/point_cloud_overlay.jpeg" height="300" />
+<p float="left">
+  <img src="Media/overview.gif" height="400" width=180 />
+  <img src="Media/point_cloud_overlay.jpeg" height="400" /> 
+</p>
 
 ## Compatibility
 
@@ -118,8 +120,10 @@ or in the world. At the moment only this QR code will work:
 
 **QR Code Size:** The size of the physical QR code. You can select sizes from 5cm to 25cm in increments of 1cm.
 
-<img src="Assets/ImageTracking/robot_qr_code.png" height="100" />
-<img src="Media/robot_qr_code_frame.png" height="100" />
+<p float="left">
+  <img src="Assets/ImageTracking/robot_qr_code.png" height="100" width=100 />
+  <img src="Media/robot_qr_code_frame.png" height="100"  width=100 /> 
+</p>
 
 **Base Link:** This should be the base link of the robot. Often times this is just called base_link.
 It is expected that the base link is not offset from the ground with the z frame pointing up.
