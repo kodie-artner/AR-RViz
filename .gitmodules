@@ -1,3 +1,3 @@
-[submodule "Packages/robot-ar-viewer"]
-	path = Packages/robot-ar-viewer
-	url = git@github.com:kodie-artner/robot-ar-viewer.git
+[submodule "Packages/ROS-TCP-Connector"]
+	path = Packages/ROS-TCP-Connector
+	url = git@github.com:kodie-artner/ROS-TCP-Connector.git

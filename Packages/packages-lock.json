@@ -75,13 +75,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.robotics.ros-tcp-connector": {
-      "version": "file:robot-ar-viewer/ROS-TCP-Connector/com.unity.robotics.ros-tcp-connector",
+      "version": "file:ROS-TCP-Connector/com.unity.robotics.ros-tcp-connector",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.unity.robotics.visualizations": {
-      "version": "file:robot-ar-viewer/ROS-TCP-Connector/com.unity.robotics.visualizations",
+      "version": "file:ROS-TCP-Connector/com.unity.robotics.visualizations",
       "depth": 0,
       "source": "local",
       "dependencies": {}
@@ -103,7 +103,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.31",
+      "version": "1.1.33",
       "depth": 0,
       "source": "registry",
       "dependencies": {
