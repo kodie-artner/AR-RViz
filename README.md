@@ -8,7 +8,7 @@ This project started out as a hackathon project for Cobalt Robotics. Check out w
 [https://www.cobaltrobotics.com](https://www.cobaltrobotics.com)
 
 This project heavily utilizes the work done by Unity's simulation team and the fork of the their
-open source package I created [ROS-TCP-Connector](git@github.com:kodie-artner/ROS-TCP-Connector.git)
+open source package I created [ROS-TCP-Connector](https://github.com/kodie-artner/ROS-TCP-Connector)
 
 <p float="left">
   <img src="Media/overview.gif" height="400" width=180 />
@@ -48,7 +48,7 @@ Robot and mobile device need to be on the same network.
 ## Getting the app
 
 The app can be downloaded for the iPhone/iPad via the app store [app](app store link). For android,
-you can download the apk from here.
+you can download the apk from the [release page](https://github.com/kodie-artner/AR-RViz/releases/latest)
 
 ## Quick Start Guide
 
