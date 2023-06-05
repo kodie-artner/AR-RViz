@@ -47,7 +47,7 @@ Robot and mobile device need to be on the same network.
 
 ## Getting the app
 
-The app can be downloaded for the iPhone/iPad via the app store [app](app store link). For android,
+The app can be downloaded for the iPhone/iPad via the app store [AR-RViz](https://apps.apple.com/us/app/arrviz/id6449395701?uo=2). For android,
 you can download the apk from the [release page](https://github.com/kodie-artner/AR-RViz/releases/latest)
 
 ## Quick Start Guide
