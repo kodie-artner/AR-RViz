@@ -189,7 +189,7 @@ public class UI : MonoBehaviour
             // Set tracker disabled
             tracker.GetComponent<MeshRenderer>().enabled = false;
             // Set Localizer to current tracker position
-            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
+            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink);
         }
     }
 
@@ -204,9 +204,9 @@ public class UI : MonoBehaviour
         {
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
-            if (menuUI.baseLink.text != "")
+            if (menuUI.baseLink != "")
             {
-                localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
+                localizer.SetMapTransform(position, heading, menuUI.baseLink);
             }
         }
     }
@@ -223,9 +223,9 @@ public class UI : MonoBehaviour
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
             // Need to convert position and heading to proper transform
-            if (menuUI.poseTopic.text != "" && menuUI.poseLink.text != "")
+            if (menuUI.poseTopic.text != "" && menuUI.poseLink != "")
             {
-                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.poseLink.text, menuUI.poseTopic.text);
+                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.poseLink, menuUI.poseTopic.text);
             }
         }
     }
@@ -292,6 +292,7 @@ public class UI : MonoBehaviour
         {
             ChangeState(State.View);
             menuPanel.SetActive(true);
+            menuUI.UpdateUI();
         }
     }
 

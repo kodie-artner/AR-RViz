@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Net;
 using System.Net.Sockets;
+using System.Linq;
 using System.Collections.Generic;
 using Unity.Robotics.ROSTCPConnector;
 using TMPro;
@@ -16,20 +17,23 @@ public class MenuUI : MonoBehaviour
     public List<XRReferenceImageLibrary> libraries;
 
     // Link in urdf that corresponds to the QR Code
-    public TMP_InputField qrCodeLink;
+    public TMP_Dropdown qrCodeDropdown;
+    public string qrCodeLink { get => qrCodeDropdown.options[qrCodeDropdown.value].text; }
 
     // Length of the QR Code edge
     public Slider qrCodeSliderLength;
     public TMP_Text qrCodeLength;
 
     // Base link of robot. Should have z axis up and on the same plane as map
-    public TMP_InputField baseLink;
+    public TMP_Dropdown baseLinkDropdown;
+    public string baseLink { get => baseLinkDropdown.options[baseLinkDropdown.value].text; }
 
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
     public TMP_InputField poseTopic;
 
     // Link to be used as frame_id in PoseStampedMsg
-    public TMP_InputField poseLink;
+    public TMP_Dropdown poseLinkDropdown;
+    public string poseLink { get => poseLinkDropdown.options[poseLinkDropdown.value].text; }
 
     public Toggle isROS2Toggle;
 
@@ -62,6 +66,12 @@ public class MenuUI : MonoBehaviour
         qrCodeSliderLength.onValueChanged.AddListener(SetQrCodeLength);
         ros.ListenForTopics(OnNewTopic, notifyAllExistingTopics: true);
         SetQrCodeLength(qrCodeSliderLength.value);
+        UpdateUI();
+    }
+
+    void OnEnable()
+    {
+        UpdateUI();
     }
 
     void Update()
@@ -84,6 +94,7 @@ public class MenuUI : MonoBehaviour
             topics.Add(state.Topic, topicVisualizer);
             UpdateScrollViewHeight(++topicsShown * scrollViewItemHeight);
         }
+        UpdateUI();
     }
 
     void ConnectCallback()
@@ -99,6 +110,22 @@ public class MenuUI : MonoBehaviour
         ros.Connect(ConnectionStartedCB, ConnectedEndedCB);
         // Update button text
         connectButtonText = "Trying To Connect...";
+    }
+
+    public void UpdateUI()
+    {
+        if (TFSystem.instance == null)
+        {
+            return;
+        }
+        List<string> options = TFSystem.instance.GetTransformNames().ToList();
+        options.Insert(0, "");
+        qrCodeDropdown.ClearOptions();
+        baseLinkDropdown.ClearOptions();
+        poseLinkDropdown.ClearOptions();
+        qrCodeDropdown.AddOptions(options);
+        baseLinkDropdown.AddOptions(options);
+        poseLinkDropdown.AddOptions(options);
     }
 
     void OnROS2Toggle(bool enabled)
