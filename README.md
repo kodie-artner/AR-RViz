@@ -89,7 +89,7 @@ In the following ROS1 launch file, I  throttle the point cloud to 5 hz and use a
 
 ```
     <!-- Throttle to 5 hurts from the original 30hz -->
-    <node name="chin_cam_throttled" type="throttle" pkg="topic_tools" args="messages /camera/depth/points 5 /camera/depth/points/throttled"/>
+    <node name="astra_throttled" type="throttle" pkg="topic_tools" args="messages /camera/depth/points 5 /camera/depth/points/throttled"/>
 
     <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
 
