@@ -31,6 +31,7 @@ public class UI : MonoBehaviour
     public ButtonPressed actionButton;
     public Button menuButton;
     public GameObject menuPanel;
+    public CanvasGroup canvasGroup;
 
     private State state = State.View;
 
@@ -41,6 +42,7 @@ public class UI : MonoBehaviour
     private Localizer localizer;
     private PoseSetter2D poseSetter2D;
     private InteractiveMarkerManipulator markerManipulator;
+    private bool menuActive;
 
     void Start()
     {
@@ -84,6 +86,7 @@ public class UI : MonoBehaviour
         actionButton.normalColor = normalColor;
         actionButton.highlightedColor = highlightedColor;
 
+        menuEnabled(false);
         // Start in QR Code Mode
         ChangeState(State.QRCode);
     }
@@ -189,7 +192,7 @@ public class UI : MonoBehaviour
             // Set tracker disabled
             tracker.GetComponent<MeshRenderer>().enabled = false;
             // Set Localizer to current tracker position
-            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink.text);
+            localizer.SetMapTransformWithTracker(tracker, menuUI.qrCodeLink);
         }
     }
 
@@ -204,9 +207,9 @@ public class UI : MonoBehaviour
         {
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
-            if (menuUI.baseLink.text != "")
+            if (menuUI.baseLink != "")
             {
-                localizer.SetMapTransform(position, heading, menuUI.baseLink.text);
+                localizer.SetMapTransform(position, heading, menuUI.baseLink);
             }
         }
     }
@@ -223,9 +226,9 @@ public class UI : MonoBehaviour
             (Vector3 position, float heading) = poseSetter2D.GetTargetTransform();
             poseSetter2D.SetState(PoseSetter2D.State.SelectingPosition);
             // Need to convert position and heading to proper transform
-            if (menuUI.poseTopic.text != "" && menuUI.poseLink.text != "")
+            if (menuUI.poseTopic.text != "" && menuUI.poseLink != "")
             {
-                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.poseLink.text, menuUI.poseTopic.text);
+                rosInterface.PublishPoseStampedMsg(position, heading, menuUI.poseLink, menuUI.poseTopic.text);
             }
         }
     }
@@ -283,16 +286,26 @@ public class UI : MonoBehaviour
 
     public void OnMenuButtonClick()
     {
-        if (menuPanel.activeSelf)
+        if (menuActive)
         {
             rosInterface.RegisterPoseTopicIfNotRegistered(menuUI.poseTopic.text);
-            menuPanel.SetActive(false);
+            menuEnabled(false);
+            menuActive = false;
         }
         else
         {
             ChangeState(State.View);
-            menuPanel.SetActive(true);
+            menuUI.UpdateUI();
+            menuEnabled(true);
+            menuActive = true;
         }
+    }
+
+    private void menuEnabled(bool enabled)
+    {
+        canvasGroup.alpha = enabled ? 1 : 0;
+        canvasGroup.interactable = enabled;
+        canvasGroup.blocksRaycasts = enabled;
     }
 
     private void SetButtonsNormalColor(Button button, Color color)
