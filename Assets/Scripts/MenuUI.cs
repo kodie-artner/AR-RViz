@@ -14,6 +14,7 @@ public class MenuUI : MonoBehaviour
 {
     // The public fields need to be set in the inspector
     public ARTrackedImageManager trackedImageManager;
+    public AROcclusionManager occlusionManager;
     public List<XRReferenceImageLibrary> libraries;
 
     // Link in urdf that corresponds to the QR Code
@@ -35,6 +36,7 @@ public class MenuUI : MonoBehaviour
     public TMP_Dropdown poseLinkDropdown;
     public string poseLink { get => poseLinkDropdown.options[poseLinkDropdown.value].text; }
 
+    public Toggle occlusionToggle;
     public Toggle isROS2Toggle;
 
     // IP address of the ros_tcp_endpoint node
@@ -55,23 +57,22 @@ public class MenuUI : MonoBehaviour
     private float scrollViewItemHeight;
     private int scrollViewPadding = 20;
     private string connectButtonText = null;
+    private float timer;
+    private float interval = 1f;
 
     void Start()
     {
         scrollViewItemHeight = topicSelectPrefab.GetComponent<RectTransform>().sizeDelta.y;
         ros = ROSConnection.GetOrCreateInstance();
+        occlusionToggle.onValueChanged.AddListener(OnOcclusionToggle);
         isROS2Toggle.onValueChanged.AddListener(OnROS2Toggle);
         connectButton.onClick.AddListener(ConnectCallback);
         filterTopics.onValueChanged.AddListener(FilterCallback);
         qrCodeSliderLength.onValueChanged.AddListener(SetQrCodeLength);
         ros.ListenForTopics(OnNewTopic, notifyAllExistingTopics: true);
         SetQrCodeLength(qrCodeSliderLength.value);
-        UpdateUI();
-    }
-
-    void OnEnable()
-    {
-        UpdateUI();
+        // TODO: don't use this long term
+        InvokeRepeating("UpdateUI", 1, 1);
     }
 
     void Update()
@@ -80,6 +81,7 @@ public class MenuUI : MonoBehaviour
         {
             connectButton.GetComponentInChildren<TMP_Text>().text = connectButtonText;
             connectButtonText = null;
+            UpdateUI();
         }
     }
 
@@ -94,7 +96,6 @@ public class MenuUI : MonoBehaviour
             topics.Add(state.Topic, topicVisualizer);
             UpdateScrollViewHeight(++topicsShown * scrollViewItemHeight);
         }
-        UpdateUI();
     }
 
     void ConnectCallback()
@@ -112,25 +113,47 @@ public class MenuUI : MonoBehaviour
         connectButtonText = "Trying To Connect...";
     }
 
+    public void TFCallback(TFStream stream)
+    {
+        UpdateUI();
+    }
+
     public void UpdateUI()
     {
+        Debug.Log("updating");
         if (TFSystem.instance == null)
         {
             return;
         }
         List<string> options = TFSystem.instance.GetTransformNames().ToList();
         options.Insert(0, "");
+
+        // Get current values. The order won't change when new tf is added
+        int qrCodeValue = qrCodeDropdown.value;
+        int baseLinkValue = baseLinkDropdown.value;
+        int poseLinkValue = poseLinkDropdown.value;
+
         qrCodeDropdown.ClearOptions();
         baseLinkDropdown.ClearOptions();
         poseLinkDropdown.ClearOptions();
         qrCodeDropdown.AddOptions(options);
         baseLinkDropdown.AddOptions(options);
         poseLinkDropdown.AddOptions(options);
+
+        qrCodeDropdown.value = qrCodeValue;
+        baseLinkDropdown.value = baseLinkValue;
+        poseLinkDropdown.value = poseLinkValue;
+
     }
 
     void OnROS2Toggle(bool enabled)
     {
         ros.ROS2 = enabled;
+    }
+
+    void OnOcclusionToggle(bool enabled)
+    {
+        occlusionManager.enabled = enabled;
     }
 
     void FilterCallback(string filter)

@@ -12,7 +12,7 @@ open source package I created [ROS-TCP-Connector](https://github.com/kodie-artne
 
 <p float="left">
   <img src="Media/overview.gif" height="400" width=180 />
-  <img src="Media/point_cloud_overlay.jpeg" height="400" />
+  <img src="Media/point_cloud_overlay.jpeg" height="400" width=618 />
 </p>
 
 ## Compatibility
@@ -192,7 +192,6 @@ Build the project via file/"Build Settings" Build
 More info can be found on building Unity projects [here](https://docs.unity3d.com/Manual/PublishingBuilds.html)
 
 ## Future Features
-
 - Change visualization settings, point size, color, etc.
 - Support for custom QR Codes
 - Importing urdf's from ros
@@ -200,7 +199,6 @@ More info can be found on building Unity projects [here](https://docs.unity3d.co
 - Visualize TF
 - Better UI when losing connection and reconnecting to ros
 - More Modes for manipulating interactive markers. Position only, rotation only, etc.
-- Add occlusion button so objects aren't rendered if a person/object is in front.
 - Apple Headset support
 - Meta Quest 3 support
 
