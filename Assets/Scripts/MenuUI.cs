@@ -19,7 +19,10 @@ public class MenuUI : MonoBehaviour
 
     // Link in urdf that corresponds to the QR Code
     public TMP_Dropdown qrCodeDropdown;
-    public string qrCodeLink { get => qrCodeDropdown.options[qrCodeDropdown.value].text; }
+    public string qrCodeLink
+    {
+        get => qrCodeDropdown.options[qrCodeDropdown.value].text;
+    }
 
     // Length of the QR Code edge
     public Slider qrCodeSliderLength;
@@ -27,14 +30,20 @@ public class MenuUI : MonoBehaviour
 
     // Base link of robot. Should have z axis up and on the same plane as map
     public TMP_Dropdown baseLinkDropdown;
-    public string baseLink { get => baseLinkDropdown.options[baseLinkDropdown.value].text; }
+    public string baseLink
+    {
+        get => baseLinkDropdown.options[baseLinkDropdown.value].text;
+    }
 
     // Topic to send a PoseStamped msg on. ex. /nav_goal, /initialpose
     public TMP_InputField poseTopic;
 
     // Link to be used as frame_id in PoseStampedMsg
     public TMP_Dropdown poseLinkDropdown;
-    public string poseLink { get => poseLinkDropdown.options[poseLinkDropdown.value].text; }
+    public string poseLink
+    {
+        get => poseLinkDropdown.options[poseLinkDropdown.value].text;
+    }
 
     public Toggle occlusionToggle;
     public Toggle isROS2Toggle;
@@ -143,7 +152,6 @@ public class MenuUI : MonoBehaviour
         qrCodeDropdown.value = qrCodeValue;
         baseLinkDropdown.value = baseLinkValue;
         poseLinkDropdown.value = poseLinkValue;
-
     }
 
     void OnROS2Toggle(bool enabled)
