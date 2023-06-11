@@ -122,11 +122,6 @@ public class MenuUI : MonoBehaviour
         connectButtonText = "Trying To Connect...";
     }
 
-    public void TFCallback(TFStream stream)
-    {
-        UpdateUI();
-    }
-
     public void UpdateUI()
     {
         Debug.Log("updating");
