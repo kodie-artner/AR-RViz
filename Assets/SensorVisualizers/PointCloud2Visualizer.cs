@@ -77,6 +77,7 @@ public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
     float lastMaxZ = 0;
     float currentMinZ = 1000;
     float currentMaxZ = 0;
+    int interationsSinceMeanCalc = 5;
 
     public override void Draw(Drawing3d drawing, PointCloud2Msg message, MessageMetadata meta)
     {
@@ -101,6 +102,7 @@ public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
         int count = 0;
         currentMinZ = 1000;
         currentMaxZ = 0;
+        List<float> zData = new List<float>();
 
         for (int i = 0; i < maxI; i++)
         {
@@ -116,18 +118,30 @@ public class PointCloud2Visualizer : DrawingVisualizer<PointCloud2Msg>
 
             drawing.DrawCuboid(unityPoint, Vector3.one * pointsize, depthColor);
             //pointCloud.AddPoint(unityPoint, depthColor, pointsize);
-            if (z < currentMinZ)
-            {
-                currentMinZ = z;
-            }
-            else if (z > currentMaxZ)
-            {
-                currentMaxZ = z;
-            }
+            zData.Add(z);
         }
         //pointCloud.Bake();
-        lastMinZ = currentMinZ;
-        lastMaxZ = currentMaxZ;
+        if (interationsSinceMeanCalc >= 5)
+        {
+            // Calculate the mean
+            float mean = zData.Average();
+
+            // Calculate the sum of squared differences from the mean
+            float sumSquaredDifferences = zData.Sum(d => Mathf.Pow(d - mean, 2));
+
+            // Calculate the variance
+            float variance = sumSquaredDifferences / zData.Count;
+
+            // Calculate the standard deviation
+            float standardDeviation = Mathf.Sqrt(variance);
+            lastMinZ = mean - 2 * standardDeviation;
+            lastMaxZ = mean + 2 * standardDeviation;
+            interationsSinceMeanCalc = 0;
+        }
+        else
+        {
+            interationsSinceMeanCalc++;
+        }
     }
 
     public void Redraw()

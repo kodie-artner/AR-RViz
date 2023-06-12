@@ -41,7 +41,7 @@ public class LaserScanVisualizer : DrawingVisualizer<LaserScanMsg>
     }
 
     [HideInInspector, SerializeField]
-    float m_PointRadius = 0.05f;
+    float m_PointRadius = 0.02f;
     public float PointRadius
     {
         get => m_PointRadius;
