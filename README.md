@@ -8,7 +8,9 @@ This project started out as a hackathon project for Cobalt Robotics. Check out w
 [https://www.cobaltrobotics.com](https://www.cobaltrobotics.com)
 
 This project heavily utilizes the work done by Unity's simulation team and the fork of the their
-open source package I created [ROS-TCP-Connector](https://github.com/kodie-artner/ROS-TCP-Connector)
+open source package I created [ROS-TCP-Connector](https://github.com/kodie-artner/ROS-TCP-Connector).
+Unity is working on a full suite of simulation tools, if you're interested in how your company can benefit from Unity,
+check out their [website](https://unity.com/solutions/automotive-transportation-manufacturing/robotics).
 
 <p float="left">
   <img src="Media/overview.gif" height="400" width=180 />
@@ -132,6 +134,11 @@ It is expected that the base link is not offset from the ground with the z frame
 It can be used to send a navigation goal, initial pose, or anything other PoseStamped msg.
 
 **Pose Frame ID:** The frame to be sent as the frame_id of the PoseStamped msg when using the Pose tool.
+
+**Occlusion:** Determines if real world objects occlude the augmented reality objects. It can be really nice
+to increase immersion because if an object is in front of a drawn object, it won't render but it has its negatives.
+First, occlusion is quite cpu intensive and second, if sensors aren't perfectly calibrated or the robot isn't
+perfectly localized, the data can end up behind objects and won't be seen.
 
 **Topics:** The topics section allows you to choose which topics are shown in the visualization. If a topic is greyed out
 it means there isn't a visualizer for that topic type. Check the creating visualizations sections to add custom
