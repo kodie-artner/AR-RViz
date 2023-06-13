@@ -8,11 +8,13 @@ This project started out as a hackathon project for Cobalt Robotics. Check out w
 [https://www.cobaltrobotics.com](https://www.cobaltrobotics.com)
 
 This project heavily utilizes the work done by Unity's simulation team and the fork of the their
-open source package I created [ROS-TCP-Connector](https://github.com/kodie-artner/ROS-TCP-Connector)
+open source package I created [ROS-TCP-Connector](https://github.com/kodie-artner/ROS-TCP-Connector).
+Unity is working on a full suite of simulation tools, if you're interested in how your company can benefit from Unity,
+check out their [website](https://unity.com/solutions/automotive-transportation-manufacturing/robotics).
 
 <p float="left">
   <img src="Media/overview.gif" height="400" width=180 />
-  <img src="Media/point_cloud_overlay.jpeg" height="400" width=618 />
+  <img src="Media/point_cloud_room.png" height="400" width=618 />
 </p>
 
 ## Compatibility
@@ -34,6 +36,8 @@ Tier 3:
 
 Any ROS1 or ROS2 robot that can run [ROS-TCP-Endpoint Package](https://github.com/Unity-Technologies/ROS-TCP-Endpoint)
 is compatible with the app.
+
+<img src="Media/arrviz.png" />
 
 # Setting Up
 
@@ -133,6 +137,11 @@ It can be used to send a navigation goal, initial pose, or anything other PoseSt
 
 **Pose Frame ID:** The frame to be sent as the frame_id of the PoseStamped msg when using the Pose tool.
 
+**Occlusion:** Determines if real world objects occlude the augmented reality objects. It can be really nice
+to increase immersion because if an object is in front of a drawn object, it won't render but it has its negatives.
+First, occlusion is quite cpu intensive and second, if sensors aren't perfectly calibrated or the robot isn't
+perfectly localized, the data can end up behind objects and won't be seen.
+
 **Topics:** The topics section allows you to choose which topics are shown in the visualization. If a topic is greyed out
 it means there isn't a visualizer for that topic type. Check the creating visualizations sections to add custom
 visualizations.
@@ -142,7 +151,7 @@ visualizations.
 Scan the room with the phone to make sure the phone is well localized. The better it is scanned, the better
 the phone will stay localized with the robot.
 
-Once ros is connected, the settings inputted, and the topics selected, you can now localize the phone to
+Once ROS is connected, the settings inputted, and the topics selected, you can now localize the phone to
 the robot. There are two ways to do this, with the QR code scanner or by manually selecting the base_link frame.
 
 **QR Code:** Select the QR code mode on the bottom right, make sure the camera is in good view of the code,
@@ -192,13 +201,14 @@ Build the project via file/"Build Settings" Build
 More info can be found on building Unity projects [here](https://docs.unity3d.com/Manual/PublishingBuilds.html)
 
 ## Future Features
+- Add better visualizer for costmaps and paths
 - Change visualization settings, point size, color, etc.
 - Support for custom QR Codes
 - Importing urdf's from ros
 - Save/Load configurations
 - Visualize TF
 - Better UI when losing connection and reconnecting to ros
-- More Modes for manipulating interactive markers. Position only, rotation only, etc.
+- More modes for manipulating interactive markers. Position only, rotation only, etc.
 - Apple Headset support
 - Meta Quest 3 support
 
