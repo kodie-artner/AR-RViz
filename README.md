@@ -13,8 +13,7 @@ Unity is working on a full suite of simulation tools, if you're interested in ho
 check out their [website](https://unity.com/solutions/automotive-transportation-manufacturing/robotics).
 
 <p float="left">
-  <img src="Media/overview.gif" height="400" width=180 />
-  <img src="Media/point_cloud_room.png" height="400" width=618 />
+  <img src="Media/people_example.gif" width=800 />
 </p>
 
 ## Compatibility
