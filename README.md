@@ -26,7 +26,7 @@ Tier 1:
 
 Tier 2: Won't localize as well, need to scan the room more before starting.
 - iPhones/iPads with ARKit support
-- Androids with ARCore support
+- Androids with [ARCore support](https://developers.google.com/ar/devices)
 
 Tier 3:
 - Hololens (Untested, ROS-TCP-Connector may not work, UI would need update)
