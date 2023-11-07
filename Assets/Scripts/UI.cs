@@ -43,6 +43,7 @@ public class UI : MonoBehaviour
     private PoseSetter2D poseSetter2D;
     private InteractiveMarkerManipulator markerManipulator;
     private bool menuActive;
+    private bool canvasActive;
 
     void Start()
     {
@@ -93,6 +94,8 @@ public class UI : MonoBehaviour
 
     void Update()
     {
+        if (!canvasActive) return;
+
         switch (state)
         {
             case State.View:
@@ -306,6 +309,7 @@ public class UI : MonoBehaviour
         canvasGroup.alpha = enabled ? 1 : 0;
         canvasGroup.interactable = enabled;
         canvasGroup.blocksRaycasts = enabled;
+        canvasActive = enabled;
     }
 
     private void SetButtonsNormalColor(Button button, Color color)

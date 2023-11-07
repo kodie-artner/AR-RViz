@@ -124,7 +124,6 @@ public class MenuUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        Debug.Log("updating");
         if (TFSystem.instance == null)
         {
             return;

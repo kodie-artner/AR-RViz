@@ -18,6 +18,7 @@ public class PoseSetter2D : MonoBehaviour
         SelectingPosition,
         SelectingRotation
     }
+    public GameObject pointer;
 
     private const TrackableType trackableTypes = TrackableType.FeaturePoint | TrackableType.PlaneWithinPolygon;
     private const float floorOffset = 0.01f;
@@ -139,7 +140,7 @@ public class PoseSetter2D : MonoBehaviour
     private void PerformRaycast()
     {
         // Checks if the raycast hit a plane
-        if (raycastManager.Raycast(raycastPosition, hits, trackableTypes))
+        if (Raycast(hits, trackableTypes))
         {
             // Raycast hits are sorted by distance, so the first one will be the closest hit.
             foreach (var hit in hits)
@@ -154,6 +155,19 @@ public class PoseSetter2D : MonoBehaviour
                     return;
                 }
             }
+        }
+    }
+
+    private bool Raycast(List<ARRaycastHit> hits, TrackableType trackableTypes)
+    {
+        if (pointer != null)
+        {
+            Ray ray = new Ray(pointer.transform.position, pointer.transform.forward);
+            return raycastManager.Raycast(ray, hits, trackableTypes);
+        }
+        else
+        {
+            return raycastManager.Raycast(raycastPosition, hits, trackableTypes);
         }
     }
 }

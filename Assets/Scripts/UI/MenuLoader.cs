@@ -46,8 +46,7 @@ using UnityEngine.XR.ARSubsystems;
 
         public static bool IsHmdDevice()
         {
-            return true;
-            //return GetMenuSceneName() == k_MetaMenuScene;
+            return GetMenuSceneName() == k_MetaMenuScene;
         }
 
         public static void LoadMenuScene()

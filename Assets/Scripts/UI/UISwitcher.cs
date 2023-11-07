@@ -7,8 +7,9 @@ using UnityEngine.Events;
 
 public class UISwitcher : MonoBehaviour
 {
-    public Canvas mainCanvas;
     public Transform hmdCanvasParent;
+    public GameObject screenCanvas;
+    public GameObject hmdCanvas;
 
     void Start()
     {
@@ -24,16 +25,15 @@ public class UISwitcher : MonoBehaviour
 
     void SetupForHmd()
     {
-        mainCanvas.transform.SetParent(hmdCanvasParent);
-        // Set to world space
-
-        // Update dimensions. Or just create a ui from
-
+        hmdCanvas.SetActive(true);
+        hmdCanvas.transform.SetParent(hmdCanvasParent);
+        hmdCanvas.transform.localPosition = new Vector3(0.1f, 0, 0);
+        hmdCanvas.transform.localRotation = Quaternion.Euler(90, 0, 0);
     }
 
     void SetupForScreen()
     {
-
+        screenCanvas.SetActive(true);
     }
 }
 
